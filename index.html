@@ -190,9 +190,9 @@
     <script>
         // =================================================================
         // ⚙️ ลิงก์ระบบหลังบ้าน Google Apps Script API (Web App URL)
-        // นำ URL ที่ได้หลังจากการ Deploy Web App บน Apps Script มาใส่วางในเครื่องหมายคำพูดด้านล่าง
+        // นำ URL ที่ได้หลังจากกด Deploy บน Apps Script มาใส่วางในเครื่องหมายคำพูดด้านล่างนี้
         // =================================================================
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzaBFcMIsXrRaXgNh-Y7p6cpCBB-Exgu1nDFyOBGLfE6oYppsANv4DsnzZsOvFLxgbu/exec"; 
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwW4wDQAIyIbIaqN9EGV_JecXAiC7vgLECcWjHf_crNNpIjUzSKrdVhKTokIDvyR3CQ/exec"; 
 
         let finalImageBase64 = ""; // เก็บค่า Base64 ของรูปที่บีบอัดแล้ว
 
@@ -215,8 +215,8 @@
                     if (result.status === "success") {
                         populateDropdown('emp-name', result.employees, "-- เลือกรายชื่อพนักงาน --");
                         populateDropdown('work-location', result.locations, "-- เลือกสถานที่ปฏิบัติงาน --");
-                        document.getElementById('system-status').innerHTML = '<i class="fa-solid fa-circle text-[7px] text-emerald-400 animate-pulse"></i> เชื่อมต่อสดเรียบร้อย';
-                        showToast("🔌 เชื่อมต่อระบบสเปรดชีตหลังบ้านเรียบร้อย", "success");
+                        document.getElementById('system-status').innerHTML = '<i class="fa-solid fa-circle text-[7px] text-emerald-400 animate-pulse"></i> เชื่อมต่อระบบสำเร็จ';
+                        showToast("🔌 ดึงฐานข้อมูลล่าสุดจาก Google Sheets สำเร็จ", "success");
                     } else {
                         throw new Error(result.message || "เกิดความผิดพลาดในการดึงค่าฐานข้อมูล");
                     }
@@ -319,7 +319,7 @@
                         container.classList.remove('hidden');
                         document.getElementById('upload-preview-img').src = resultBase64;
                         document.getElementById('photo-helper-text').textContent = "📷 แนบรูปภาพจริงของคุณเรียบร้อยแล้ว";
-                        showToast("📷 แนบรูปภาพจริงของคุณสำเร็จ", "success");
+                        showToast("📷 บีบอัดและแนบรูปภาพจริงสำเร็จ", "success");
                     };
                 };
             }
@@ -327,8 +327,10 @@
 
         // ฟังก์ชันล้างรูปภาพที่อัปโหลดไว้
         function clearUploadedImage(e) {
-            e.preventDefault();
-            e.stopPropagation();
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             
             finalImageBase64 = "";
             document.getElementById('dropzone-file').value = "";
@@ -346,8 +348,6 @@
             if (activeRadio) {
                 activeRadio.checked = false;
             }
-
-            showToast("ล้างรูปภาพและข้อมูลประเภทงานที่เลือกแล้ว", "warning");
         }
 
         // =================================================================
@@ -403,7 +403,7 @@
                 image: finalImageBase64
             };
 
-            // เรียกยิง API ไปที่ Apps Script 后
+            // เรียกยิง API ไปที่ Apps Script 後
             fetch(WEB_APP_URL, {
                 method: "POST",
                 body: JSON.stringify(payload),
@@ -417,15 +417,15 @@
                 loadingCard.classList.add('hidden');
                 successCard.classList.remove('hidden');
                 successCard.classList.add('scale-100');
-                successMsg.textContent = `ข้อมูลและรูปภาพหลักฐานถูกจัดส่งเข้าแผ่นงานย่อย "${workType}" เรียบร้อยแล้วครับ`;
+                successMsg.textContent = `ข้อมูลและรูปภาพหลักฐานถูกจัดส่งเข้าแผ่นงานย่อย "${workType}" และแจ้งเตือนเข้าไลน์เรียบร้อยแล้วครับ`;
 
                 // ล้างช่องกรอกข้อความเมื่อทำเสร็จ
                 document.getElementById('work-details').value = "";
                 const activeRadio = document.querySelector('input[name="work-type"]:checked');
                 if (activeRadio) activeRadio.checked = false;
-                clearUploadedImage(event);
+                clearUploadedImage(null);
 
-                showToast(`🎉 ส่งรายงานเข้าสเปรดชีตแผ่นงาน "${workType}" และแจ้งเตือนเข้ากลุ่มไลน์สำเร็จ!`, "success");
+                showToast(`🎉 ส่งรายงานเข้าสเปรดชีตแผ่นงาน "${workType}" และแจ้งเตือน LINE สำเร็จ!`, "success");
             })
             .catch(err => {
                 console.error("Submission Error: ", err);
