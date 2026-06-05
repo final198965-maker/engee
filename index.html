@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบรายงานการปฏิบัติงาน - สำหรับพนักงาน</title>
+    <title>ระบบรายงานการปฏิบัติงาน - สำหรับพนักงานสวน</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Sarabun) -->
@@ -25,20 +25,23 @@
         <div class="max-w-md mx-auto py-4 px-5 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="bg-white/15 p-2 rounded-xl">
-                    <i class="fa-solid fa-seedling text-lg text-emerald-200 animate-pulse"></i>
+                    <i class="fa-solid fa-leaf text-lg text-emerald-200 animate-pulse"></i>
                 </div>
                 <div>
                     <h1 class="text-md font-bold tracking-wide">รายงานการทำงานพนักงาน</h1>
                     <p class="text-[10px] text-emerald-100/80">ระบบลงรายงานและส่งหลักฐานภาพถ่าย</p>
                 </div>
             </div>
-            <div class="bg-emerald-800/40 px-2.5 py-1 rounded-full text-[10px] text-emerald-200 border border-emerald-500/20">
-                Online
+            <div id="connection-badge" class="bg-amber-500/20 px-2.5 py-1 rounded-full text-[10px] text-amber-200 border border-amber-500/20 flex items-center gap-1">
+                <i class="fa-solid fa-circle-notch animate-spin text-[8px]"></i> Connecting
             </div>
         </div>
     </header>
 
-    <!-- Main Container (Optimized for Mobile Screens) -->
+    <!-- Custom Toast Notification Container -->
+    <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-full max-w-xs px-4 space-y-2 pointer-events-none"></div>
+
+    <!-- Main Container -->
     <main class="max-w-md mx-auto px-4 mt-6">
         
         <!-- Welcome Card -->
@@ -47,25 +50,21 @@
                 <i class="fa-solid fa-tree text-9xl"></i>
             </div>
             <div class="relative z-10">
-                <h2 class="text-sm font-semibold text-slate-500">ยินดีต้อนรับพนักงานทุกท่าน 👋</h2>
-                <p class="text-xs text-slate-400 mt-0.5">กรุณากรอกข้อมูลการปฏิบัติงานจริงและแนบหลักฐานรูปภาพให้ชัดเจน</p>
+                <h2 class="text-sm font-semibold text-slate-500">ยินดีต้อนรับพนักงานดูแลพื้นที่ 🌿</h2>
+                <p class="text-xs text-slate-400 mt-0.5">กรุณาเลือกชื่อของคุณ ไซต์งาน และถ่ายภาพแนบส่งรายงานเข้าระบบ</p>
             </div>
         </div>
 
         <!-- Form Block -->
         <form id="report-form" class="space-y-5">
             
-            <!-- 1. Employee Name Selector -->
+            <!-- 1. Employee Name Selector (ดึงข้อมูลอัตโนมัติจากหลังบ้าน) -->
             <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
                 <label class="block text-slate-700 text-sm font-bold mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-user-check text-emerald-600"></i> ชื่อ-นามสกุลพนักงาน
                 </label>
-                <select id="emp-name" required class="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10 transition-all font-medium text-slate-700">
-                    <option value="" disabled selected>-- เลือกรายชื่อของคุณ --</option>
-                    <option value="มนธน นามชนะ">มนธน นามชนะ (วิศวกรไฟฟ้าระบบ)</option>
-                    <option value="สมชาย ใจดี">สมชาย ใจดี (โฟร์แมนหน้างาน)</option>
-                    <option value="สุดารัตน์ รักงาม">สุดารัตน์ รักงาม (ฝ่ายควบคุมความปลอดภัย)</option>
-                    <option value="กิตติพงษ์ ทองแท้">กิตติพงษ์ ทองแท้ (ช่างเทคนิคอาวุโส)</option>
+                <select id="emp-name" required disabled class="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10 transition-all font-medium text-slate-500 cursor-wait">
+                    <option value="" disabled selected>⏳ กำลังโหลดรายชื่อพนักงานจากหลังบ้าน...</option>
                 </select>
             </div>
 
@@ -85,7 +84,7 @@
                 </div>
             </div>
 
-            <!-- 3. Photo Upload with automatic compression -->
+            <!-- 3. Photo Upload (เฉพาะงานสวน / ตัดหญ้า) -->
             <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
                 <label class="block text-slate-700 text-sm font-bold mb-1 flex items-center gap-2">
                     <i class="fa-solid fa-camera text-emerald-600"></i> ถ่ายรูปหรือแนบรูปหลักฐาน
@@ -98,7 +97,7 @@
                         <div id="upload-placeholder" class="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
                             <i class="fa-solid fa-image text-3xl text-slate-400 group-hover:text-emerald-600 transition-colors mb-2.5"></i>
                             <p class="text-xs font-semibold text-slate-500 group-hover:text-emerald-600 transition-colors">แตะเพื่อถ่ายรูป หรือ เลือกรูปถ่าย</p>
-                            <p class="text-[10px] text-slate-400 mt-1">รองรับกล้องมือถือโดยตรง</p>
+                            <p class="text-[10px] text-slate-400 mt-1">เฉพาะประเภทงานสวน หรือ งานตัดหญ้า</p>
                         </div>
                         
                         <!-- Real-time Image Preview Area -->
@@ -109,30 +108,27 @@
                             </button>
                         </div>
                         
-                        <!-- File Input (Accepts any image, prompts camera default on mobile) -->
+                        <!-- File Input -->
                         <input id="dropzone-file" type="file" accept="image/*" capture="environment" class="hidden" required onchange="handleImageSelection(this)">
                     </label>
                 </div>
             </div>
 
-            <!-- 4. Location Selector -->
+            <!-- 4. Location Selector (ดึงข้อมูลอัตโนมัติจากหลังบ้าน) -->
             <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
                 <label class="block text-slate-700 text-sm font-bold mb-3 flex items-center gap-2">
                     <i class="fa-solid fa-map-location-dot text-emerald-600"></i> สถานที่ปฏิบัติงาน (ไซต์งาน)
                 </label>
-                <select id="work-location" required class="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10 transition-all font-medium text-slate-700">
-                    <option value="🏡 โครงการบ้านแกรนด์วิลล์ (สวนหย่อมส่วนกลาง)">🏡 โครงการบ้านแกรนด์วิลล์ (สวนหย่อมส่วนกลาง)</option>
-                    <option value="🏢 สำนักงานใหญ่ (พื้นที่สวนรอบตึกหลัก)" selected>🏢 สำนักงานใหญ่ (พื้นที่สวนรอบตึกหลัก)</option>
-                    <option value="🌳 สวนสาธารณะเทศบาลเมือง (โซนสระน้ำ)">🌳 สวนสาธารณะเทศบาลเมือง (โซนสระน้ำ)</option>
-                    <option value="🏡 บ้านพักส่วนบุคคลลูกค้า VIP (อ.เมือง จ.จันทบุรี)">🏡 บ้านพักส่วนบุคคลลูกค้า VIP (อ.เมือง จ.จันทบุรี)</option>
+                <select id="work-location" required disabled class="w-full bg-slate-50 border border-slate-200 focus:border-emerald-500 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/10 transition-all font-medium text-slate-500 cursor-wait">
+                    <option value="" disabled selected>⏳ กำลังโหลดรายชื่อสถานที่จากหลังบ้าน...</option>
                 </select>
             </div>
 
             <!-- Submit Button Section -->
             <div class="pt-2">
-                <button type="submit" id="btn-submit" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 text-base transition-all active:scale-[0.98]">
+                <button type="submit" id="btn-submit" disabled class="w-full bg-gradient-to-r from-slate-300 to-slate-400 text-white font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 text-base transition-all cursor-not-allowed">
                     <i class="fa-solid fa-paper-plane"></i>
-                    <span>ส่งข้อมูลเพื่อส่งรายงานเข้า LINE</span>
+                    <span>กรุณารอโหลดข้อมูลระบบหลังบ้าน...</span>
                 </button>
             </div>
 
@@ -159,7 +155,7 @@
                 <i class="fa-solid fa-check"></i>
             </div>
             <h4 class="font-bold text-slate-800 text-lg">ส่งข้อมูลเรียบร้อยแล้ว!</h4>
-            <p class="text-xs text-slate-500">ข้อมูลของคุณถูกลงตาราง Sheets และรายงานเด้งเข้าไปยังไลน์กลุ่มหัวหน้าเรียบร้อยแล้วครับ</p>
+            <p class="text-xs text-slate-500">ข้อมูลของคุณถูกลงตาราง Sheets แผ่น "งานสวน" และส่งรายงานเข้าไปยังกลุ่มไลน์เรียบร้อยแล้วครับ</p>
             <button type="button" onclick="closeStatusModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 rounded-xl text-sm transition-all shadow">
                 ตกลง, ทำงานต่อ
             </button>
@@ -167,45 +163,138 @@
 
     </div>
 
-    <!-- Script Area containing production logic -->
+    <!-- Script Area -->
     <script>
         // ==========================================
         // ⚙️ ส่วนตั้งค่าความปลอดภัย (CONFIGURATION)
         // ==========================================
-        // นำ URL ของ Google Apps Script ที่ได้จาก ขั้นตอนที่ 2 (Deploy Web App) มาใส่ในช่องด้านล่างนี้
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyEWnLAwzE-y4Xo1l5-QaC_QPNMJ6Gg3sDml3Bl73kqKaYpP_h4zxxf1NIZmv6GU_4X/exec";
+        // ⚠️ วาง URL ของ Google Apps Script ที่ลงท้ายด้วย /exec ตรงนี้ครับ
+        const WEB_APP_URL = "ใส่_WEB_APP_URL_จาก_GOOGLE_APPS_SCRIPT_ตรงนี้";
 
-        let finalImageBase64 = ""; // Variable to hold compressed base64 string
+        let finalImageBase64 = ""; 
 
-        // Apply helper functions to set text easily
+        // เรียกดึงข้อมูลจาก Sheets หลังบ้านทันทีที่โหลดหน้าเว็บ
+        window.addEventListener('DOMContentLoaded', () => {
+            const connectionBadge = document.getElementById('connection-badge');
+
+            if (WEB_APP_URL && !WEB_APP_URL.includes("ใส่_WEB_APP_URL") && WEB_APP_URL !== "") {
+                fetch(WEB_APP_URL)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("การเชื่อมต่อเครือข่ายผิดพลาด");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === "success" && data.employees && data.locations) {
+                            renderDropdown('emp-name', data.employees, "-- เลือกรายชื่อของคุณ --");
+                            renderDropdown('work-location', data.locations, "-- เลือกสถานที่ปฏิบัติงาน --");
+                            
+                            // เปิดใช้งานปุ่มส่งรายงาน
+                            enableSubmitButton();
+
+                            connectionBadge.className = "bg-emerald-500/20 px-2.5 py-1 rounded-full text-[10px] text-emerald-200 border border-emerald-500/20 flex items-center gap-1";
+                            connectionBadge.innerHTML = "<i class='fa-solid fa-circle text-[6px] animate-pulse'></i> Online";
+                            showToast("เชื่อมต่อฐานข้อมูล Google Sheets สำเร็จ", "success");
+                        } else {
+                            handleLoadError(data.message || "โครงสร้างข้อมูลไม่สมบูรณ์");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("ดึงข้อมูลไม่สำเร็จ:", err);
+                        handleLoadError("เชื่อมต่อระบบไม่สำเร็จ");
+                    });
+            } else {
+                handleLoadError("ยังไม่ได้ตั้งค่า WEB_APP_URL");
+            }
+        });
+
+        // ฟังก์ชันวาดตัวเลือกใน Dropdown
+        function renderDropdown(elementId, items, placeholder) {
+            const select = document.getElementById(elementId);
+            if (!select) return;
+            select.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+            items.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item;
+                opt.textContent = item;
+                select.appendChild(opt);
+            });
+            select.disabled = false;
+            select.classList.remove('cursor-wait', 'text-slate-500');
+            select.classList.add('text-slate-700', 'bg-white');
+        }
+
+        // ฟังก์ชันจัดการข้อผิดพลาดในการเชื่อมต่อ
+        function handleLoadError(errorReason) {
+            const empSelect = document.getElementById('emp-name');
+            const locSelect = document.getElementById('work-location');
+            const submitBtn = document.getElementById('btn-submit');
+            const connectionBadge = document.getElementById('connection-badge');
+
+            if (empSelect) {
+                empSelect.innerHTML = `<option value="" disabled selected>❌ ไม่พบข้อมูลรายชื่อพนักงาน (${errorReason})</option>`;
+                empSelect.disabled = true;
+                empSelect.classList.remove('cursor-wait');
+                empSelect.classList.add('cursor-not-allowed', 'bg-red-50/50', 'border-red-200');
+            }
+            if (locSelect) {
+                locSelect.innerHTML = `<option value="" disabled selected>❌ ไม่พบข้อมูลสถานที่ปฏิบัติงาน (${errorReason})</option>`;
+                locSelect.disabled = true;
+                locSelect.classList.remove('cursor-wait');
+                locSelect.classList.add('cursor-not-allowed', 'bg-red-50/50', 'border-red-200');
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.className = "w-full bg-slate-300 text-slate-500 font-bold py-4 rounded-2xl shadow-none flex items-center justify-center gap-2 text-base transition-all cursor-not-allowed";
+                submitBtn.querySelector('span').textContent = "ระบบยังไม่พร้อมใช้งาน (โหลดข้อมูลล้มเหลว)";
+            }
+
+            if (connectionBadge) {
+                connectionBadge.className = "bg-red-500/20 px-2.5 py-1 rounded-full text-[10px] text-red-200 border border-red-500/20 flex items-center gap-1";
+                connectionBadge.innerHTML = "<i class='fa-solid fa-circle text-[6px]'></i> Offline";
+            }
+
+            showToast("⚠️ ไม่สามารถดึงรายชื่อจากตารางได้ กรุณาตรวจสอบสิทธิ์การ Deploy ในหลังบ้าน", "error");
+        }
+
+        // เปิดการใช้งานปุ่มส่ง
+        function enableSubmitButton() {
+            const submitBtn = document.getElementById('btn-submit');
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.className = "w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 text-base transition-all active:scale-[0.98] cursor-pointer";
+                submitBtn.querySelector('span').textContent = "ส่งรายงานการทำงานเข้า LINE";
+            }
+        }
+
+        // ฟังก์ชันช่วยวางข้อความด่วน
         function setQuickText(text) {
             document.getElementById('work-details').value = text;
         }
 
-        // Handles user image selection, processes it and downsizes to prevent Apps Script timeouts
+        // จัดการอัปโหลดและบีบอัดรูปภาพ
         function handleImageSelection(input) {
             const file = input.files[0];
             if (file) {
-                // Show loading indicator in file label
                 document.getElementById('upload-placeholder').innerHTML = `
                     <i class="fa-solid fa-spinner animate-spin text-3xl text-emerald-500 mb-2"></i>
                     <p class="text-xs font-semibold text-emerald-600">กำลังบีบอัดภาพ...</p>
                 `;
 
-                // Read and compress image
                 compressImage(file, function(compressedBase64) {
                     finalImageBase64 = compressedBase64;
-
-                    // Update visual UI indicators
                     document.getElementById('upload-placeholder').classList.add('hidden');
                     const container = document.getElementById('upload-preview-container');
                     container.classList.remove('hidden');
                     document.getElementById('upload-preview-img').src = compressedBase64;
+                    showToast("บีบอัดและแนบไฟล์ภาพเรียบร้อย", "success");
                 });
             }
         }
 
-        // Image compression algorithm to keep transfer sizes small
+        // อัลกอริทึมบีบอัดรูปภาพฝั่งหน้าเว็บ
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -214,7 +303,7 @@
                 img.src = e.target.result;
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800; // Limit size to 800px to ensure quick upload
+                    const MAX_WIDTH = 800; 
                     let width = img.width;
                     let height = img.height;
 
@@ -236,14 +325,14 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Compress to JPG format with 75% quality
+                    // บีบอัดเป็น JPG คุณภาพ 75%
                     const resultBase64 = canvas.toDataURL('image/jpeg', 0.75);
                     callback(resultBase64);
                 };
             };
         }
 
-        // Clear selection to permit re-upload
+        // ล้างรูปภาพที่เลือกไว้
         function clearUploadedImage(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -252,31 +341,62 @@
             document.getElementById('dropzone-file').value = "";
             document.getElementById('upload-preview-container').classList.add('hidden');
             
-            // Re-render original instruction interface inside dropzone
             document.getElementById('upload-placeholder').classList.remove('hidden');
             document.getElementById('upload-placeholder').innerHTML = `
                 <i class="fa-solid fa-image text-3xl text-slate-400 group-hover:text-emerald-600 transition-colors mb-2.5"></i>
                 <p class="text-xs font-semibold text-slate-500 group-hover:text-emerald-600 transition-colors">แตะเพื่อถ่ายรูป หรือ เลือกรูปถ่าย</p>
-                <p class="text-[10px] text-slate-400 mt-1">รองรับกล้องมือถือโดยตรง</p>
+                <p class="text-[10px] text-slate-400 mt-1">เฉพาะประเภทงานสวน หรือ งานตัดหญ้า</p>
             `;
+            showToast("ล้างรูปภาพเดิมออกแล้ว", "warning");
         }
 
-        // Handle POST form submission to the Web App URL
+        // แสดง Toast แจ้งเตือนสไตล์มินิมอล
+        function showToast(message, type = "error") {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `p-3 rounded-2xl shadow-lg text-xs font-semibold text-white transition-all duration-300 transform translate-y-2 opacity-0 flex items-center gap-2 pointer-events-auto bg-slate-800 border-l-4`;
+            
+            if (type === "success") {
+                toast.classList.add('border-emerald-500');
+                toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span>${message}</span>`;
+            } else if (type === "warning") {
+                toast.classList.add('border-amber-500');
+                toast.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400"></i> <span>${message}</span>`;
+            } else {
+                toast.classList.add('border-rose-500');
+                toast.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400"></i> <span>${message}</span>`;
+            }
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // จัดการส่งข้อมูลฟอร์มด้วยคำสั่ง POST
         document.getElementById('report-form').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Validate configuration
-            if (WEB_APP_URL.includes("ใส่_Web_App_URL")) {
-                alert("🔴 กรุณานำ URL ของเว็บแอปจาก Google Apps Script มาใส่แทนที่ในส่วนตั้งค่า (บรรทัดที่ 113) ก่อนอัปโหลดไฟล์ใช้งานจริงครับ!");
+            if (WEB_APP_URL.includes("ใส่_WEB_APP_URL") || WEB_APP_URL === "") {
+                showToast("🔴 ไม่พบลิงก์หลังบ้าน กรุณานำ URL จากหลังบ้านมาใส่ในโค้ดก่อนครับ", "error");
                 return;
             }
 
             if (!finalImageBase64) {
-                alert("⚠️ กรุณาแนบรูปภาพรายงานการทำงานก่อนส่งครับ!");
+                showToast("⚠️ กรุณาแนบรูปภาพรายงานการทำงานก่อนส่งครับ!", "warning");
                 return;
             }
 
-            // Show full screen spinner
             const modal = document.getElementById('status-modal');
             const loadingCard = document.getElementById('modal-loading-card');
             const successCard = document.getElementById('modal-success-card');
@@ -285,7 +405,6 @@
             loadingCard.classList.remove('hidden');
             successCard.classList.add('hidden');
 
-            // Construct payload package
             const payload = {
                 name: document.getElementById('emp-name').value,
                 details: document.getElementById('work-details').value,
@@ -293,37 +412,32 @@
                 image: finalImageBase64
             };
 
-            // Post action via fetch (using no-cors in case of redirect handling issues, but standard json works)
             fetch(WEB_APP_URL, {
                 method: 'POST',
-                mode: 'no-cors', // Prevents CORS preflight blockage on Google Apps Script redirect URL
+                mode: 'no-cors', // เพื่อป้องกันปัญหาบล็อก CORS บราวเซอร์ขณะส่งข้ามเซิร์ฟเวอร์ Google
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(payload)
             })
             .then(response => {
-                // Since 'no-cors' mode is used, we assume success as we cannot inspect redirected responses
-                // This is standard for raw fetch endpoints on script.google.com
                 setTimeout(() => {
                     loadingCard.classList.add('hidden');
                     successCard.classList.remove('hidden');
                     successCard.classList.add('scale-100');
                     
-                    // Reset input fields
+                    // รีเซ็ตแบบฟอร์ม
                     document.getElementById('work-details').value = "";
                     clearUploadedImage(e);
                 }, 1500);
             })
             .catch(error => {
-                console.error("Transmission error:", error);
-                alert("เกิดปัญหาขัดข้องขณะเชื่อมต่อกับระบบหลังบ้าน: " + error.toString());
+                console.error("การส่งข้อมูลล้มเหลว:", error);
+                showToast("เกิดปัญหาระหว่างส่งข้อมูลไปยังระบบหลังบ้าน: " + error.toString(), "error");
                 modal.classList.add('hidden');
             });
-
         });
 
-        // Close state displayer
         function closeStatusModal() {
             document.getElementById('status-modal').classList.add('hidden');
         }
