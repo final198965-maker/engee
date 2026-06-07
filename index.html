@@ -3,52 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบรายงานผลการปฏิบัติงานสวน</title>
+  <title>ระบบรายงานผลการปฏิบัติงาน</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Sarabun', sans-serif; }
-    .radio-card input:checked + div {
-      border-color: #22c55e;
-      background-color: #f0fdf4;
+    body { 
+      font-family: 'Sarabun', sans-serif; 
+    }
+    .job-type-card input:checked + div {
+      border-color: #10b981;
+      background-color: #ecfdf5;
+      color: #047857;
     }
   </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-100 min-h-screen flex flex-col justify-between">
 
-  <!-- ส่วนหัวแอปพลิเคชัน -->
+  <!-- Header โทนเขียวสวยงาม -->
   <header class="bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-md">
     <div class="max-w-md mx-auto px-4 py-5 text-center">
-      <h1 class="text-xl font-bold tracking-wide"><i class="fa-solid fa-leaf mr-2"></i>ระบบรายงานผลงานประจำวัน</h1>
-      <p class="text-xs text-green-100 mt-1">กรอกข้อมูลการเข้าบำรุงรักษางานสวนและงานตัดหญ้า</p>
+      <h1 class="text-xl font-bold tracking-wide">
+        <i class="fa-solid fa-leaf mr-2 animate-pulse"></i>ระบบรายงานผลงานประจำวัน
+      </h1>
+      <p class="text-xs text-green-100 mt-1">กรอกข้อมูลบันทึกผลงานคนสวนและคนตัดหญ้าของคุณ</p>
     </div>
   </header>
 
-  <!-- ฟอร์มรายงานสำหรับพนักงาน -->
+  <!-- ตัวฟอร์มหลัก -->
   <main class="flex-grow flex items-start justify-center px-4 py-6">
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 w-full max-w-md">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 w-full max-w-md">
       
       <form id="reportForm" class="space-y-5">
         
-        <!-- 1. เลือกประเภทงาน (🌿 งานสวน หรือ ✂️ งานตัดหญ้า) -->
+        <!-- 1. เลือกประเภทงาน -->
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">เลือกประเภทงาน <span class="text-red-500">*</span></label>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">เลือกประเภทงานเพื่อแยกรายงาน <span class="text-red-500">*</span></label>
           <div class="grid grid-cols-2 gap-3">
             
-            <label class="radio-card cursor-pointer">
+            <label class="job-type-card cursor-pointer">
               <input type="radio" name="job_type" value="งานสวน" class="sr-only" required>
               <div class="border-2 border-slate-200 rounded-xl p-4 text-center hover:border-emerald-500 transition-all">
                 <span class="text-2xl block mb-1">🌿</span>
-                <span class="text-sm font-medium text-slate-800">งานสวน</span>
+                <span class="text-sm font-semibold">งานสวน</span>
               </div>
             </label>
             
-            <label class="radio-card cursor-pointer">
+            <label class="job-type-card cursor-pointer">
               <input type="radio" name="job_type" value="งานตัดหญ้า" class="sr-only">
               <div class="border-2 border-slate-200 rounded-xl p-4 text-center hover:border-emerald-500 transition-all">
                 <span class="text-2xl block mb-1">✂️</span>
-                <span class="text-sm font-medium text-slate-800">งานตัดหญ้า</span>
+                <span class="text-sm font-semibold">งานตัดหญ้า</span>
               </div>
             </label>
 
@@ -59,8 +64,8 @@
         <div>
           <label for="employeeName" class="block text-sm font-semibold text-slate-700 mb-1.5">ชื่อ-นามสกุลพนักงาน <span class="text-red-500">*</span></label>
           <div class="relative">
-            <select id="employeeName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" required disabled>
-              <option value="">⏳ กำลังโหลดรายชื่อพนักงาน...</option>
+            <select id="employeeName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" required>
+              <option value="">⏳ กำลังดึงรายชื่อพนักงานจากสเปรดชีต...</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
               <i class="fa-solid fa-chevron-down text-sm"></i>
@@ -72,8 +77,8 @@
         <div>
           <label for="location" class="block text-sm font-semibold text-slate-700 mb-1.5">สถานที่ปฏิบัติงาน <span class="text-red-500">*</span></label>
           <div class="relative">
-            <select id="location" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" required disabled>
-              <option value="">⏳ กำลังโหลดรายชื่อสถานที่...</option>
+            <select id="location" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" required>
+              <option value="">⏳ กำลังดึงสถานที่จากสเปรดชีต...</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
               <i class="fa-solid fa-chevron-down text-sm"></i>
@@ -83,190 +88,206 @@
 
         <!-- 4. รายละเอียดงาน -->
         <div>
-          <label for="details" class="block text-sm font-semibold text-slate-700 mb-1.5">รายละเอียดการปฏิบัติงาน <span class="text-red-500">*</span></label>
-          <textarea id="details" rows="3" placeholder="ระบุการทำงาน เช่น รดน้ำ ถอนวัชพืช พรวนดิน ใส่ปุ๋ยบำรุง..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" required></textarea>
+          <label for="details" class="block text-sm font-semibold text-slate-700 mb-1.5">รายละเอียดงานที่ทำวันนี้ <span class="text-red-500">*</span></label>
+          <textarea id="details" rows="3" placeholder="ระบุสิ่งที่ดำเนินการ เช่น ดำเนินการรดน้ำ ถอนวัชพืช และใส่ปุ๋ยบำรุงต้นไม้เสร็จสิ้นเรียบร้อยแล้ว..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" required></textarea>
         </div>
 
-        <!-- 5. ถ่ายภาพการทำงานจริง -->
+        <!-- 5. แนบภาพหน้างานจริง (แนบได้สูงสุด 4 ภาพ) -->
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1.5">ภาพถ่ายหน้างานจริง <span class="text-red-500">*</span></label>
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="block text-sm font-semibold text-slate-700">ภาพถ่ายหน้างานจริง <span class="text-red-500">*</span></label>
+            <span id="imageCounter" class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">0 / 4 รูป</span>
+          </div>
           
-          <!-- ช่องสำหรับกดแนบภาพถ่าย -->
-          <div id="imageUploadArea" class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:bg-slate-50 hover:border-emerald-500 transition-all cursor-pointer">
-            <input type="file" id="imageInput" accept="image/*" class="hidden" required>
-            <div id="uploadPlaceholder">
-              <i class="fa-solid fa-camera text-3xl text-slate-400 mb-2"></i>
-              <p class="text-sm font-medium text-slate-700">แตะเพื่อเปิดกล้องถ่ายรูป</p>
-              <p class="text-xs text-slate-400 mt-1">หรือเลือกไฟล์ภาพจากคลังรูปภาพในมือถือ</p>
-            </div>
+          <div id="imageUploadArea" class="border-2 border-dashed border-slate-300 rounded-2xl p-5 text-center hover:bg-emerald-50/20 hover:border-emerald-500 transition-all cursor-pointer">
+            <input type="file" id="imageInput" accept="image/*" class="hidden">
             
-            <!-- ส่วนการแสดงผลตัวอย่างภาพเมื่อแนบภาพเสร็จแล้ว -->
-            <div id="imagePreviewContainer" class="hidden relative">
-              <img id="imagePreview" class="max-h-64 mx-auto rounded-xl shadow-inner border border-slate-100 object-cover" src="#" alt="ภาพถ่ายผลงาน">
-              <button type="button" id="btnCancelImage" class="absolute -top-3 -right-3 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 shadow-md transition-all focus:outline-none">
-                <i class="fa-solid fa-xmark"></i>
-              </button>
+            <div id="uploadPlaceholder">
+              <i class="fa-solid fa-camera text-4xl text-emerald-500 mb-2"></i>
+              <p class="text-sm font-bold text-slate-700">แตะเพื่อถ่ายภาพ หรือ เลือกรูป</p>
+              <p class="text-xs text-slate-400 mt-1">สามารถเลือกเพิ่มมุมมองได้สูงสุด 4 ภาพต่อการรายงานครับ</p>
             </div>
           </div>
+
+          <!-- กริดแสดงผลลัพธ์พรีวิวรูปภาพชุด -->
+          <div id="imagesGrid" class="grid grid-cols-2 gap-3 mt-4 hidden"></div>
         </div>
 
-        <!-- ปุ่มกดเพื่อบันทึกและส่งรายงาน -->
-        <button type="submit" id="btnSubmit" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2" disabled>
-          <span><i class="fa-solid fa-paper-plane"></i></span>
-          <span>ส่งรายงานเข้ากลุ่ม LINE ตรวจงาน</span>
+        <!-- ปุ่มส่งข้อมูล -->
+        <button type="submit" id="btnSubmit" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>ส่งรายงานผลการปฏิบัติงาน</span>
         </button>
 
       </form>
     </div>
   </main>
 
-  <!-- ม่านโหมดรอผลการส่งข้อมูล (Loading Spinner) -->
+  <!-- ม่านโหมดรอประมวลผล -->
   <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center flex-col z-50">
     <div class="bg-white p-6 rounded-2xl flex flex-col items-center max-w-xs mx-auto text-center shadow-2xl">
       <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mb-4"></div>
-      <p class="font-bold text-slate-800 text-base">กำลังอัปโหลดรูปภาพ...</p>
-      <p class="text-xs text-slate-500 mt-1">และทำการบันทึกข้อมูลรายงาน ลงในระบบ Google Sheets</p>
+      <p id="loadingText" class="font-bold text-slate-800 text-base">กำลังอัปโหลดข้อมูล...</p>
+      <p class="text-xs text-slate-500 mt-1">อัปโหลดภาพไป Google Drive และจัดส่งข้อความพุชเข้าห้องแชทไลน์</p>
     </div>
   </div>
 
-  <!-- ป๊อปอัปแจ้งเตือนความคืบหน้าการส่ง (Custom Modals) -->
+  <!-- กล่องแสดงสถานะสำเร็จ (Custom Modal) -->
   <div id="statusModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
     <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl scale-95 transition-all">
-      <div id="modalIcon" class="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-2xl mb-4"></div>
+      <div id="modalIcon" class="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-3xl mb-4"></div>
       <h3 id="modalTitle" class="text-lg font-bold text-slate-800 mb-1"></h3>
       <p id="modalMessage" class="text-sm text-slate-500 mb-6 px-2"></p>
-      <button id="modalBtnClose" class="w-full py-2.5 rounded-xl font-bold text-white transition-all shadow-md focus:outline-none"></button>
+      <button id="modalBtnClose" class="w-full py-3 rounded-xl font-bold text-white transition-all shadow-md focus:outline-none"></button>
     </div>
   </div>
 
   <footer class="bg-slate-100 border-t border-slate-200 text-center py-4">
-    <p class="text-xs text-slate-500">&copy; 2026 ระบบรายงานการปฏิบัติงานสวนพนักงาน • ปลอดภัยและเสถียร</p>
+    <p class="text-xs text-slate-500">&copy; 2026 ระบบรายงานการปฏิบัติงานสวนพนักงานของแท้เสถียรที่สุด</p>
   </footer>
 
   <script>
-    // ⚠️ ระบุลิงก์หลังบ้าน Google Apps Script Web App URL ของคุณที่นี่
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwCXjTBXLZwMpEssS4xyOzh0HGN6zCz-6DUDOm9kkh4-pWgblZrBx-HrSHzdUV6sBsU/exec";
+    // ⚠️ นำลิงก์ Web App URL (ลงท้ายด้วย /exec) ที่ได้จาก Google Apps Script มาใส่ตรงนี้ครับ
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxfiR4thgORplawrhlHPkhU9fXw7v2XqtZtDjaGG0rv_dwfN691VS0hYbrKwHiQAw26/exec";
 
     const reportForm = document.getElementById('reportForm');
     const imageUploadArea = document.getElementById('imageUploadArea');
     const imageInput = document.getElementById('imageInput');
     const uploadPlaceholder = document.getElementById('uploadPlaceholder');
-    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-    const imagePreview = document.getElementById('imagePreview');
-    const btnCancelImage = document.getElementById('btnCancelImage');
+    const imagesGrid = document.getElementById('imagesGrid');
+    const imageCounter = document.getElementById('imageCounter');
     const loadingOverlay = document.getElementById('loadingOverlay');
-    const btnSubmit = document.getElementById('btnSubmit');
+    const loadingText = document.getElementById('loadingText');
     
-    // ตัวควบคุมกล่องแจ้งเตือนพิเศษ (Custom Modal)
     const statusModal = document.getElementById('statusModal');
     const modalIcon = document.getElementById('modalIcon');
     const modalTitle = document.getElementById('modalTitle');
     const modalMessage = document.getElementById('modalMessage');
     const modalBtnClose = document.getElementById('modalBtnClose');
 
-    let base64ImageString = "";
+    let attachedImages = [];
+    const MAX_IMAGES = 4;
 
-    // ดึงรายชื่อพนักงานและสถานที่สดแบบอัตโนมัติเมื่อพนักงานเปิดหน้าเว็บขึ้นมา
+    // 1. ดึงรายชื่อพนักงานและสถานที่จาก Google Sheet เพื่อแสดงผลหน้าเว็บ
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const response = await fetch(WEB_APP_URL);
-        const resJson = await response.json();
+        const data = await response.json();
         
-        if (resJson.status === "success") {
-          // ดึงรายชื่อพนักงาน
-          const employeeSelect = document.getElementById('employeeName');
-          employeeSelect.innerHTML = '<option value="">-- โปรดเลือกชื่อของคุณ --</option>';
-          resJson.employees.forEach(name => {
+        if (data.status === "success") {
+          // ดึงพนักงาน
+          const empSelect = document.getElementById('employeeName');
+          empSelect.innerHTML = '<option value="">-- เลือกชื่อ-นามสกุลของคุณ --</option>';
+          data.employees.forEach(name => {
             const opt = document.createElement('option');
             opt.value = name;
             opt.textContent = name;
-            employeeSelect.appendChild(opt);
+            empSelect.appendChild(opt);
           });
-          employeeSelect.disabled = false;
 
-          // ดึงข้อมูลสถานที่ทำงาน
-          const locationSelect = document.getElementById('location');
-          locationSelect.innerHTML = '<option value="">-- โปรดเลือกสถานที่ปฏิบัติงาน --</option>';
-          resJson.locations.forEach(loc => {
+          // ดึงสถานที่ทำงาน
+          const locSelect = document.getElementById('location');
+          locSelect.innerHTML = '<option value="">-- เลือกสถานที่ทำงานวันนี้ --</option>';
+          data.locations.forEach(loc => {
             const opt = document.createElement('option');
             opt.value = loc;
             opt.textContent = loc;
-            locationSelect.appendChild(opt);
+            locSelect.appendChild(opt);
           });
-          locationSelect.disabled = false;
-          
-          // เปิดให้กดส่งข้อมูล
-          btnSubmit.disabled = false;
         } else {
-          showModal("❌ โหลดข้อมูลล้มเหลว", "เกิดปัญหาขัดข้องฝั่งตัวสเปรดชีต กรุณาแจ้งหัวหน้าเพื่อตรวจเช็กสิทธิ์หน้าเว็บ", "error");
+          showModal("❌ โหลดข้อมูลล้มเหลว", "กรุณาตรวจสอบสิทธิ์การแชร์สเปรดชีตและ Apps Script", "error");
         }
       } catch (err) {
-        showModal("🔌 การเชื่อมต่อขัดข้อง", "ไม่สามารถดึงรายชื่อพนักงานได้ โปรดตรวจสอบว่าได้ระบุลิงก์หลังบ้านที่ถูกต้องในโค้ดบรรทัดที่ 113 หรือยังครับ", "error");
+        showModal("📡 ขาดสัญญาณการติดต่อ", "ไม่สามารถเข้าดึงข้อมูลพนักงานได้ โปรดตรวจสอบอินเทอร์เน็ตเครื่องของคุณครับ", "error");
       }
     });
 
-    // ดักการทำงานของการแตะพื้นที่อัปโหลดรูปภาพ
-    imageUploadArea.addEventListener('click', (e) => {
-      if (e.target.closest('#btnCancelImage')) return;
+    // 2. แตะกรอบกล่องเพื่อเลือกรูปหรือถ่ายรูปกล้องหน้างานจริง
+    imageUploadArea.addEventListener('click', () => {
+      if (attachedImages.length >= MAX_IMAGES) {
+        showModal("⚠️ แฟ้มภาพเต็มโควตา", "สามารถถ่ายภาพปฏิบัติงานสูงสุดได้ 4 ภาพต่อการบันทึกรายงานครับ", "warning");
+        return;
+      }
       imageInput.click();
     });
 
-    // ตรวจจับเมื่อผู้ใช้ทำการถ่ายรูปหรืออัปโหลดรูปภาพ
+    // 3. ดักจับเมื่อมีการถ่ายรูปภาพสำเร็จ
     imageInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          base64ImageString = event.target.result;
-          imagePreview.src = event.target.result;
-          
-          uploadPlaceholder.classList.add('hidden');
-          imagePreviewContainer.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+
+      const file = files[0];
+      const reader = new FileReader();
+      
+      reader.onload = function(event) {
+        const base64Str = event.target.result;
+        attachedImages.push(base64Str);
+        renderImages();
+        imageInput.value = ""; // เคลียร์ของเตรียมพร้อมถ่ายภาพชุดใบถัดไป
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 4. แสดงภาพชุดทั้งหมดลงบนหน้าจอ Grid พรีวิวฟอร์ม
+    function renderImages() {
+      imageCounter.textContent = `${attachedImages.length} / ${MAX_IMAGES} รูป`;
+
+      if (attachedImages.length === 0) {
+        imagesGrid.innerHTML = "";
+        imagesGrid.classList.add('hidden');
+        uploadPlaceholder.classList.remove('hidden');
+        return;
       }
-    });
 
-    // ฟังก์ชันกดยกเลิกการแนบรูปภาพ (เพื่อเคลียร์ของเป็นสภาวะเริ่มต้น)
-    btnCancelImage.addEventListener('click', (e) => {
-      e.stopPropagation();
-      clearAttachedImage();
-    });
+      uploadPlaceholder.classList.add('hidden');
+      imagesGrid.classList.remove('hidden');
+      imagesGrid.innerHTML = "";
 
-    function clearAttachedImage() {
-      imageInput.value = "";
-      base64ImageString = "";
-      imagePreview.src = "#";
-      imagePreviewContainer.classList.add('hidden');
-      uploadPlaceholder.classList.remove('hidden');
+      attachedImages.forEach((imgBase64, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = "relative rounded-xl overflow-hidden border border-slate-200 bg-slate-50 aspect-video group";
+        
+        wrapper.innerHTML = `
+          <img class="w-full h-full object-cover" src="${imgBase64}" alt="ภาพถ่ายที่ ${index + 1}">
+          <button type="button" onclick="removeImage(${index})" class="absolute top-1.5 right-1.5 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg transition-all focus:outline-none text-xs">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        `;
+        imagesGrid.appendChild(wrapper);
+      });
     }
 
-    // ดักการกดยืนยันปุ่มส่งฟอร์มข้อมูลทั้งหมด
+    // 5. ลบรูปรายใบออกจากหน้าพรีวิวฟอร์ม
+    window.removeImage = function(index) {
+      attachedImages.splice(index, 1);
+      renderImages();
+    };
+
+    // 6. กดซับมิทส่งข้อมูลฟอร์มพนักงานลงตารางและพุชแจ้งเตือน
     reportForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const selectedJobType = document.querySelector('input[name="job_type"]:checked');
-      if (!selectedJobType) {
-        showModal("⚠️ เลือกประเภทงาน", "กรุณาติ๊กเลือกประเภทงานว่าเป็น 'งานสวน' หรือ 'งานตัดหญ้า' ก่อนส่งครับ", "warning");
+      const jobType = document.querySelector('input[name="job_type"]:checked');
+      if (!jobType) {
+        showModal("⚠️ ตรวจสอบการเลือก", "กรุณาเลือกว่าเป็นรายงาน 'งานสวน' หรือ 'งานตัดหญ้า' ก่อนส่งครับ", "warning");
         return;
       }
 
-      if (!base64ImageString) {
-        showModal("📷 แนบรูปภาพจริง", "บังคับแนบรูปถ่ายปฏิบัติงานจริง ห้ามส่งแบบไม่มีรูปภาพหลักฐานครับ", "warning");
+      if (attachedImages.length === 0) {
+        showModal("📷 บังคับแนบรูปถ่ายงาน", "กรุณาเปิดกล้องและถ่ายภาพผลงานอย่างน้อย 1 รูปขึ้นไป", "warning");
         return;
       }
 
-      // แสดงการทำงานหน้าจอม่านหมุน Loading
       loadingOverlay.classList.remove('hidden');
       loadingOverlay.classList.add('flex');
+      loadingText.textContent = `กำลังอัปโหลดรูป (0 / ${attachedImages.length} รูป)...`;
 
-      // เตรียมข้อมูล Payload ที่จะส่งเข้า API หลังบ้าน
       const payload = {
-        type: selectedJobType.value,
+        type: jobType.value,
         name: document.getElementById('employeeName').value,
         location: document.getElementById('location').value,
         details: document.getElementById('details').value,
-        image: base64ImageString
+        images: attachedImages
       };
 
       try {
@@ -277,50 +298,48 @@
         
         const result = await response.json();
         
-        // ดึงการทำม่านหมุนออก
         loadingOverlay.classList.remove('flex');
         loadingOverlay.classList.add('hidden');
 
         if (result.status === "success") {
           showModal(
-            "🎉 ส่งผลงานสำเร็จ!", 
-            `บันทึกประวัติการทำงานเข้าแผ่นงานและแชร์ภาพหลักฐานลงกลุ่มแชทไลน์เรียบร้อยแล้ว`, 
+            "🎉 ส่งรายงานเสร็จสิ้น!", 
+            `บันทึกประวัติการทำงานลงแผ่นงาน "${jobType.value}" และจัดส่งความคืบหน้าแจ้งเตือนรูปกลุ่มเรียบร้อยแล้ว`, 
             "success",
             () => {
-              // ล้างฟอร์มเตรียมรับค่าของวันถัดไป
               reportForm.reset();
-              clearAttachedImage();
+              attachedImages = [];
+              renderImages();
             }
           );
         } else {
-          showModal("❌ เกิดข้อผิดพลาด", result.message || "เกิดความขัดข้องทางระบบ กรุณาทดลองส่งใหม่อีกครั้ง", "error");
+          showModal("❌ ล้มเหลว", result.message || "เกิดความขัดข้องของระบบสเปรดชีต กรุณาทดลองใหม่อีกรอบ", "error");
         }
       } catch (err) {
         loadingOverlay.classList.remove('flex');
         loadingOverlay.classList.add('hidden');
-        showModal("📡 การส่งล้มเหลว", "ขาดการตอบรับจากเซิร์ฟเวอร์ กรุณาตรวจสอบอินเทอร์เน็ตของเครื่องคุณและยิงข้อมูลซ้ำอีกครั้ง", "error");
+        showModal("📡 การเชื่อมต่อขัดข้อง", "ไม่ได้รับสัญญาณตอบรับจากหลังบ้าน กรุณาตรวจสอบอินเทอร์เน็ตมือถือและส่งข้อมูลอีกรอบ", "error");
       }
     });
 
-    // ฟังก์ชันเปิดแจ้งเตือน Custom Modal ทดแทน Alert เพื่อการทำงานใน iFrame ที่สมบูรณ์
-    function showModal(title, msg, type = "success", onCloseCallback = null) {
+    // แสดงแจ้งเตือนหน้าต่างแบบเรียบหรูทดแทน alert()
+    function showModal(title, msg, type = "success", callback = null) {
       modalTitle.textContent = title;
       modalMessage.textContent = msg;
       
-      // ล้างสีสถานะปุ่มเดิมออกก่อน
-      modalIcon.className = "w-16 h-16 mx-auto rounded-full flex items-center justify-center text-2xl mb-4";
-      modalBtnClose.className = "w-full py-2.5 rounded-xl font-bold text-white transition-all shadow-md focus:outline-none";
+      modalIcon.className = "w-16 h-16 mx-auto rounded-full flex items-center justify-center text-3xl mb-4";
+      modalBtnClose.className = "w-full py-3 rounded-xl font-bold text-white transition-all shadow-md focus:outline-none";
 
       if (type === "success") {
         modalIcon.classList.add('bg-green-100', 'text-green-600');
-        modalIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+        modalIcon.innerHTML = '<i class="fa-solid fa-circle-check animate-bounce"></i>';
         modalBtnClose.classList.add('bg-green-600', 'hover:bg-green-700');
         modalBtnClose.textContent = "ตกลง";
       } else if (type === "warning") {
         modalIcon.classList.add('bg-amber-100', 'text-amber-600');
         modalIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
         modalBtnClose.classList.add('bg-amber-500', 'hover:bg-amber-600');
-        modalBtnClose.textContent = "กลับไปแก้ไข";
+        modalBtnClose.textContent = "ตรวจสอบข้อบกพร่อง";
       } else {
         modalIcon.classList.add('bg-red-100', 'text-red-600');
         modalIcon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
@@ -334,7 +353,7 @@
       modalBtnClose.onclick = () => {
         statusModal.classList.remove('flex');
         statusModal.classList.add('hidden');
-        if (onCloseCallback) onCloseCallback();
+        if (callback) callback();
       };
     }
   </script>
