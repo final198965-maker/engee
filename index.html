@@ -32,14 +32,14 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght=300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Sarabun', sans-serif;
             background-color: #f1f5f9;
             overscroll-behavior-y: contain;
         }
-        /* ปิดการตอบสนองเมื่อกำลังอัปโหลด */
+        /* ปิดการทำงานขณะกำลังอัปโหลด */
         .loading-disabled {
             pointer-events: none;
             opacity: 0.6;
@@ -50,7 +50,7 @@
 
     <!-- ส่วนหัวของระบบบนมือถือ (Mobile Header) -->
     <header class="bg-gradient-to-r from-primary-800 to-primary-600 text-white shadow-md sticky top-0 z-40">
-        <div class="px-4 py-4 flex justify-between items-center max-w-md mx-auto w-full">
+        <div class="px-4 py-4 flex justify-between items-center max-w-md mx-auto w-full font-sans">
             <div class="flex items-center gap-2.5">
                 <div class="bg-white/20 p-2.5 rounded-xl backdrop-blur-sm">
                     <i class="fa-solid fa-leaf text-lg text-yellow-300"></i>
@@ -63,10 +63,6 @@
                     </p>
                 </div>
             </div>
-            <!-- ปุ่มตั้งค่าด่วนสำหรับกรอก Webhook URL หลังบ้าน -->
-            <button onclick="toggleSettingsModal()" id="btn-open-settings" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all text-white" title="ตั้งค่าระบบ">
-                <i class="fa-solid fa-sliders text-sm"></i>
-            </button>
         </div>
     </header>
 
@@ -80,7 +76,7 @@
                 </div>
                 <div>
                     <h4 class="font-bold text-slate-700 text-sm">เขียนรายงานส่งงาน</h4>
-                    <p class="text-[10px] text-slate-400">กรอกข้อมูลและถ่ายรูปเพื่อบันทึกและส่งเข้าไลน์กลุ่ม</p>
+                    <p class="text-[10px] text-slate-400">กรอกข้อมูลและแนบรูปถ่ายอัลบั้มเพื่อบันทึกและส่งเข้าไลน์กลุ่ม</p>
                 </div>
             </div>
 
@@ -108,7 +104,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-500 mb-1.5">ชื่อคนงานผู้ปฏิบัติงาน *</label>
-                        <select id="new-employee" required class="w-full px-2 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none">
+                        <select id="new-employee" required class="w-full px-2 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none font-sans">
                             <!-- ดึงข้อมูลมาจาก JavaScript ด้านล่าง -->
                         </select>
                     </div>
@@ -122,37 +118,41 @@
                     </select>
                 </div>
 
-                <!-- การแนบรูปภาพจากกล้องถ่ายรูปมือถือ -->
+                <!-- การแนบรูปภาพหลายรูปจากกล้องถ่ายรูปหรือคลังภาพมือถือ -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1.5">ถ่ายรูปภาพหลักฐานการทำงาน *</label>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label class="block text-xs font-semibold text-slate-500">ถ่ายรูปภาพหรือแนบรูปถ่ายหลักฐาน *</label>
+                        <span id="image-count-badge" class="text-[10px] font-bold bg-primary-100 text-primary-700 px-2.5 py-0.5 rounded-full">แนบแล้ว 0 รูป</span>
+                    </div>
                     <div class="space-y-2">
-                        <!-- ตัวเปิดกล้องมือถือจริง (เรียกใช้กล้องหลังผ่าน capture="environment") -->
-                        <input type="file" id="new-image-file" accept="image/*" capture="environment" class="hidden" onchange="handleMobileImageSelect(this)">
+                        <!-- ตัวเปิดกล้องมือถือจริงแบบเลือกได้หลายไฟล์พร้อมกัน -->
+                        <input type="file" id="new-image-file" accept="image/*" multiple class="hidden" onchange="handleMobileImageSelect(this)">
                         
                         <!-- ปุ่มกดถ่ายรูปขนาดใหญ่ -->
-                        <button type="button" id="btn-camera-trigger" onclick="triggerMobileCamera()" class="w-full py-5 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border-2 border-dashed border-slate-200 hover:border-primary-500 text-slate-600 rounded-2xl text-xs font-semibold flex flex-col items-center justify-center gap-2 transition-all">
-                            <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600">
-                                <i class="fa-solid fa-camera text-lg"></i>
+                        <button type="button" id="btn-camera-trigger" onclick="triggerMobileCamera()" class="w-full py-4 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border-2 border-dashed border-slate-200 hover:border-primary-500 text-slate-600 rounded-2xl text-xs font-semibold flex flex-col items-center justify-center gap-2 transition-all">
+                            <div class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center text-primary-600">
+                                <i class="fa-solid fa-images text-base"></i>
                             </div>
-                            <span class="text-xs">กดตรงนี้เพื่อเปิดกล้องถ่ายภาพทันที</span>
+                            <span class="text-xs">กดถ่ายรูปภาพใหม่ หรือ เลือกรูปจากอัลบั้มมือถือ</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- พื้นที่แสดงรูปภาพพรีวิวก่อนส่ง -->
-                <div id="image-preview-container" class="hidden border border-slate-100 p-2 rounded-xl bg-slate-50 relative">
-                    <span class="text-[9px] font-bold text-slate-400 block mb-1">ภาพที่จะส่งเข้า LINE:</span>
-                    <img id="form-image-preview" src="" class="h-48 w-full object-cover rounded-lg">
-                    <button type="button" id="btn-clear-img" onclick="clearImagePreview()" class="absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
+                <!-- พื้นที่แสดงรูปภาพอัลบั้มพรีวิวก่อนส่ง (Album Grid Preview) -->
+                <div id="image-preview-container" class="hidden border border-slate-100 p-3 rounded-xl bg-slate-50 space-y-2">
+                    <span class="text-[9px] font-bold text-slate-400 block">อัลบั้มรูปภาพที่จะส่งเข้าแชท LINE (แตะรูปกากบาทสีแดงเพื่อลบ):</span>
+                    
+                    <!-- กริดแสดงรูปภาพอัลบั้ม -->
+                    <div id="album-preview-grid" class="grid grid-cols-3 gap-2">
+                        <!-- รูปพรีวิวจะถูกแทรกเข้ามาตรงนี้ด้วย JavaScript -->
+                    </div>
                 </div>
 
                 <!-- ปุ่มกดส่งรายงาน -->
                 <button type="submit" id="btn-submit-report" class="w-full py-3.5 bg-line hover:bg-emerald-600 active:bg-emerald-700 text-white font-bold rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-2">
                     <span id="btn-submit-text" class="flex items-center gap-2">
                         <i class="fa-brands fa-line text-lg"></i>
-                        ส่งรายงานปฏิบัติงาน (บันทึกลงชีต & ส่งไลน์กลุ่ม)
+                        ส่งรายงานและอัลบั้มภาพ (บันทึกลงชีต & ส่งไลน์กลุ่ม)
                     </span>
                 </button>
             </form>
@@ -162,54 +162,33 @@
 
     <!-- ส่วนแสดงหน้าต่างขณะกำลังอัปโหลดแบบเต็มจอ ป้องกันการกดส่งงานซ้ำ -->
     <div id="uploading-overlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4 hidden">
-        <div class="bg-white p-6 rounded-2xl shadow-2xl flex flex-col items-center space-y-4 max-w-xs text-center">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl flex flex-col items-center space-y-4 max-w-xs text-center font-sans">
             <div class="w-16 h-16 rounded-full bg-primary-50 flex items-center justify-center">
                 <i class="fa-solid fa-circle-notch animate-spin text-3xl text-primary-600"></i>
             </div>
             <div>
                 <h5 class="font-bold text-slate-800 text-sm">กำลังอัปโหลดและส่งรายงาน...</h5>
-                <p class="text-[10px] text-slate-400 mt-1">ระบบกำลังบันทึกภาพถ่ายลง Google Drive และส่งเข้ากลุ่ม LINE ห้ามปิดหน้านี้หรือกดซ้ำ</p>
+                <p class="text-[10px] text-slate-400 mt-1">ระบบกำลังอัปโหลดอัลบั้มภาพเข้า Google Drive และส่งเข้าแชทกลุ่ม LINE กรุณารอสักครู่ ห้ามปิดหน้าจอนี้</p>
             </div>
         </div>
     </div>
 
     <!-- ส่วนล่างสุด -->
-    <footer class="bg-slate-200 text-center py-4 text-[10px] text-slate-500">
+    <footer class="bg-slate-200 text-center py-4 text-[10px] text-slate-500 font-sans">
          © 2026 ระบบสารสนเทศฝ่ายสิ่งแวดล้อม เทศบาลจันทบุรี
     </footer>
 
     <!-- ส่วนแสดงการแจ้งเตือน Toast -->
-    <div id="toast-container" class="fixed bottom-6 left-4 right-4 z-50 flex flex-col gap-2 max-w-md mx-auto pointer-events-none"></div>
-
-    <!-- Modal สำหรับตั้งค่า URL เชื่อมต่อระบบหลังบ้าน -->
-    <div id="settings-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-xl max-w-sm w-full p-5 space-y-4">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
-                    <i class="fa-solid fa-gears text-sky-500"></i>
-                    ตั้งค่าเชื่อมต่อระบบหลังบ้าน
-                </h4>
-                <button onclick="toggleSettingsModal()" class="text-slate-400 hover:text-slate-600">
-                    <i class="fa-solid fa-circle-xmark text-lg"></i>
-                </button>
-            </div>
-            <div class="space-y-3">
-                <p class="text-[10px] text-slate-400">ระบุ URL เว็บแอป (Web App URL) ที่ได้จากการเผยแพร่โค้ด Google Apps Script ใน Canvas เพื่อเชื่อมโยงฐานข้อมูลจริง</p>
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-500 mb-1">Google Apps Script Web App URL</label>
-                    <input type="url" id="setting-gas-url" placeholder="https://script.google.com/macros/s/.../exec" class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:outline-none font-mono">
-                </div>
-            </div>
-            <div class="flex justify-end gap-2 text-xs">
-                <button onclick="toggleSettingsModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg font-bold">ยกเลิก</button>
-                <button onclick="saveGasUrlSettings()" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-bold">บันทึกเชื่อมต่อ</button>
-            </div>
-        </div>
-    </div>
+    <div id="toast-container" class="fixed bottom-6 left-4 right-4 z-50 flex flex-col gap-2 max-w-md mx-auto pointer-events-none font-sans"></div>
 
     <!-- โค้ดส่วนจัดการการส่งข้อมูลและการทำงานของ UI -->
     <script>
-        // ฐานข้อมูลรายชื่อพนักงานและสถานที่ตามจริงที่ดึงจากไฟล์ CSV ของระบบ
+        // =========================================================================
+        // ⚠️ บันทึกค่าไว้ที่นี่: ระบบจะทำการส่งตรงไปหา Google Apps Script ตัวนี้ทันทีเมื่อคนงานกดรายงาน
+        // =========================================================================
+        const GAS_WEB_URL = "https://script.google.com/macros/s/AKfycbz_9P6mN0_0X4Kx-mB6C-mO_9P6mN0_0X4Kx/exec";
+
+        // ฐานข้อมูลรายชื่อพนักงานและสถานที่ปฏิบัติงาน (อ้างอิงตรงจากข้อมูล CSV จริงของเทศบาล)
         const db = {
             employees: [
                 "นาย คณิต สีสาม", 
@@ -240,8 +219,8 @@
             ]
         };
 
-        let currentFormImageBase64 = '';
-        let GAS_WEB_URL = '';
+        // อาร์เรย์เก็บรหัสรูปภาพ Base64 ทั้งหมดในอัลบั้ม
+        let albumImagesBase64 = [];
         let isCurrentlySubmitting = false; // ตัวแปรล็อกสถานะการส่งเพื่อป้องกันรายงานเบิ้ลส่งซ้ำ
 
         window.onload = function() {
@@ -250,13 +229,6 @@
 
         function initApp() {
             populateSelectOptions();
-
-            // เรียกคืนค่า URL หลังบ้านที่เคยบันทึกไว้ใน Browser
-            const savedUrl = localStorage.getItem('GAS_WEB_URL_SAVED');
-            if (savedUrl) {
-                GAS_WEB_URL = savedUrl;
-                document.getElementById('setting-gas-url').value = savedUrl;
-            }
 
             // ตั้งค่าวันที่ปัจจุบันในฟอร์มเป็นค่าเริ่มต้น (รูปแบบ วัน/เดือน/ปี)
             const today = new Date();
@@ -299,39 +271,95 @@
             document.getElementById('new-image-file').click();
         }
 
-        // จัดการอัปโหลดไฟล์รูปภาพและแปลงเป็น Base64
+        // จัดการและประมวลผลไฟล์รูปภาพที่เลือกหลายๆ รูปพร้อมกัน
         function handleMobileImageSelect(input) {
-            const file = input.files[0];
-            if (!file) return;
+            const files = input.files;
+            if (!files || files.length === 0) return;
 
-            if (!file.type.startsWith('image/')) {
-                showToast('กรุณาเลือกไฟล์ที่เป็นรูปภาพเท่านั้น!', 'error');
+            let loadedCount = 0;
+            const targetCount = files.length;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+
+                if (!file.type.startsWith('image/')) {
+                    showToast('ข้ามไฟล์ที่ไม่ใช่รูปภาพ!', 'error');
+                    continue;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // แอดเข้าอาร์เรย์อัลบั้มรูปภาพ
+                    albumImagesBase64.push(e.target.result);
+                    loadedCount++;
+
+                    // เมื่อโหลดครบทุกภาพแล้ว ให้สั่งจัดทำอัลบั้มพรีวิวและนับยอดใหม่
+                    if (loadedCount === targetCount || loadedCount === files.length) {
+                        renderAlbumPreview();
+                        showToast(`แนบรูปภาพเข้าอัลบั้มสำเร็จ!`, 'success');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // เคลียร์ input เผื่อต้องการคลิกเพิ่มภาพใหม่อีกรอบ
+            input.value = '';
+        }
+
+        // วาดภาพอัลบั้มกริดพรีวิวและอัปเดตตัวเลขจำนวนรูปในอัลบั้ม
+        function renderAlbumPreview() {
+            const container = document.getElementById('image-preview-container');
+            const grid = document.getElementById('album-preview-grid');
+            const badge = document.getElementById('image-count-badge');
+
+            grid.innerHTML = '';
+
+            if (albumImagesBase64.length === 0) {
+                container.classList.add('hidden');
+                badge.textContent = `แนบแล้ว 0 รูป`;
+                badge.className = "text-[10px] font-bold bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full";
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                currentFormImageBase64 = e.target.result;
-                document.getElementById('image-preview-container').classList.remove('hidden');
-                document.getElementById('form-image-preview').src = currentFormImageBase64;
-                showToast('ดึงภาพเข้าสู่ระบบพรีวิวสำเร็จ!', 'success');
-            };
-            reader.readAsDataURL(file);
+            container.classList.remove('hidden');
+            badge.textContent = `แนบแล้ว ${albumImagesBase64.length} รูป`;
+            badge.className = "text-[10px] font-bold bg-primary-100 text-primary-700 px-2.5 py-0.5 rounded-full";
+
+            albumImagesBase64.forEach((imgBase64, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "relative aspect-square w-full rounded-lg overflow-hidden border border-slate-200 shadow-sm";
+                
+                itemDiv.innerHTML = `
+                    <img src="${imgBase64}" class="w-full h-full object-cover">
+                    <!-- ปุ่มลบกากบาทสีแดงบนหัวรูปพรีวิว -->
+                    <button type="button" onclick="removeImageFromAlbum(${index})" class="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] shadow border border-white/20 hover:bg-red-600 active:scale-95 transition-transform">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                `;
+                grid.appendChild(itemDiv);
+            });
+        }
+
+        // ลบรูปภาพที่เจาะจงออกจากอัลบั้มก่อนส่งงาน
+        function removeImageFromAlbum(index) {
+            if (isCurrentlySubmitting) return;
+            albumImagesBase64.splice(index, 1);
+            renderAlbumPreview();
+            showToast('ลบรูปภาพออกจากพรีวิวแล้ว', 'success');
         }
 
         function clearImagePreview() {
             if (isCurrentlySubmitting) return;
-            currentFormImageBase64 = '';
+            albumImagesBase64 = [];
             document.getElementById('new-image-file').value = '';
-            document.getElementById('image-preview-container').classList.add('hidden');
-            document.getElementById('form-image-preview').src = '';
+            renderAlbumPreview();
         }
 
-        // จัดการส่งรายงานปฏิบัติงานเข้าหลังบ้าน Google Apps Script และส่งเข้ากลุ่ม LINE
+        // จัดการส่งรายงานปฏิบัติงานเข้าหลังบ้าน Google Apps Script และส่งรูปภาพเข้าแชทกลุ่ม LINE
         async function handleAddNewRecord(event) {
             event.preventDefault();
 
-            // ล็อกระบบป้องกันสปิริตเบิ้ลคลิกความเร็วสูง (ป้องกันซ้ำอย่างเด็ดขาด)
+            // ล็อกระบบป้องกันคลิกซ้ำซ้อนอย่างเด็ดขาด
             if (isCurrentlySubmitting) return;
 
             const type = document.querySelector('input[name="new-type"]:checked').value;
@@ -344,21 +372,21 @@
                 return;
             }
 
-            if (!currentFormImageBase64) {
-                showToast('กรุณาถ่ายรูปรายงานปฏิบัติงานจริงก่อนส่ง!', 'error');
+            if (albumImagesBase64.length === 0) {
+                showToast('กรุณาแนบรูปถ่ายปฏิบัติงานอย่างน้อย 1 รูป!', 'error');
                 return;
             }
 
-            if (!GAS_WEB_URL || !GAS_WEB_URL.startsWith('http')) {
-                showToast('กรุณากรอกลิงก์ตั้งค่า URL หลังบ้านก่อนส่งงาน (ปุ่มขวาบน)!', 'error');
+            // ตรวจสอบความถูกต้องของลิงก์หลังบ้าน
+            if (!GAS_WEB_URL || GAS_WEB_URL.includes("ใส่_URL_เว็บแอป_ตรงนี้")) {
+                showToast('กรุณากำหนด GAS_WEB_URL ของระบบหลังบ้านในโค้ดก่อนใช้งาน!', 'error');
                 return;
             }
 
-            // เริ่มการบล็อกการกระทำทั้งหมด
+            // เริ่มการบล็อกปุ่มส่งและเปิดแผ่นบังโคลนเต็มจอ
             isCurrentlySubmitting = true;
             document.getElementById('uploading-overlay').classList.remove('hidden');
             document.getElementById('form-container-box').classList.add('loading-disabled');
-            document.getElementById('btn-open-settings').disabled = true;
 
             const payload = {
                 action: 'submitWorkReport',
@@ -366,11 +394,11 @@
                 date: date,
                 employee: employee,
                 location: location,
-                imageBase64: currentFormImageBase64
+                imageBase64Array: albumImagesBase64 // ส่งอาร์เรย์รูปทั้งหมดไปหลังบ้าน
             };
 
             try {
-                // ส่งตรงไปยังปลายทางด้วยโหมด no-cors ป้องกัน CORS Policy
+                // ส่งตรงไปยังระบบหลังบ้าน Google Apps Script
                 await fetch(GAS_WEB_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -380,22 +408,21 @@
                     body: JSON.stringify(payload)
                 });
 
-                showToast('ส่งรายงานความสำเร็จ บันทึกลงระบบสเปรดชีตและแชทไลน์เรียบร้อยแล้ว!', 'success');
+                showToast('ส่งรายงานและอัปโหลดอัลบั้มรูปภาพเข้าระบบสำเร็จ!', 'success');
                 
-                // คืนค่าฟอร์มพร้อมใช้งานเพื่อส่งงานครั้งถัดไป
+                // ล้างอัลบั้มรูปภาพและคืนค่าฟอร์มกลับเป็นค่าเริ่มต้น
                 clearImagePreview();
                 document.getElementById('new-employee').selectedIndex = 0;
                 document.getElementById('new-location').selectedIndex = 0;
 
             } catch (err) {
-                showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง', 'error');
+                showToast('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง', 'error');
                 console.error(err);
             } finally {
-                // ปลดล็อกระบบและปุ่มต่าง ๆ
+                // คืนค่าระบบปลดล็อกปุ่มต่างๆ ให้พร้อมใช้งานใหม่
                 isCurrentlySubmitting = false;
                 document.getElementById('uploading-overlay').classList.add('hidden');
                 document.getElementById('form-container-box').classList.remove('loading-disabled');
-                document.getElementById('btn-open-settings').disabled = false;
             }
         }
 
@@ -423,25 +450,6 @@
                 toast.classList.add('opacity-0', 'translate-y-2');
                 setTimeout(() => { toast.remove(); }, 300);
             }, 4500);
-        }
-
-        // ตัวเปิดปิด Modal การตั้งค่า
-        function toggleSettingsModal() {
-            if (isCurrentlySubmitting) return;
-            const modal = document.getElementById('settings-modal');
-            modal.classList.toggle('hidden');
-        }
-
-        function saveGasUrlSettings() {
-            const val = document.getElementById('setting-gas-url').value.trim();
-            if (!val || !val.startsWith('http')) {
-                showToast('ลิงก์ URL ไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง!', 'error');
-                return;
-            }
-            GAS_WEB_URL = val;
-            localStorage.setItem('GAS_WEB_URL_SAVED', val);
-            showToast('เชื่อมต่อระบบหลังบ้านสำเร็จ!', 'success');
-            toggleSettingsModal();
         }
     </script>
 </body>
