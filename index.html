@@ -1,361 +1,905 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบรายงานผลการปฏิบัติงาน</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body { 
-      font-family: 'Sarabun', sans-serif; 
-    }
-    .job-type-card input:checked + div {
-      border-color: #10b981;
-      background-color: #ecfdf5;
-      color: #047857;
-    }
-  </style>
-</head>
-<body class="bg-slate-100 min-h-screen flex flex-col justify-between">
-
-  <!-- Header โทนเขียวสวยงาม -->
-  <header class="bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-md">
-    <div class="max-w-md mx-auto px-4 py-5 text-center">
-      <h1 class="text-xl font-bold tracking-wide">
-        <i class="fa-solid fa-leaf mr-2 animate-pulse"></i>ระบบรายงานผลงานประจำวัน
-      </h1>
-      <p class="text-xs text-green-100 mt-1">กรอกข้อมูลบันทึกผลงานคนสวนและคนตัดหญ้าของคุณ</p>
-    </div>
-  </header>
-
-  <!-- ตัวฟอร์มหลัก -->
-  <main class="flex-grow flex items-start justify-center px-4 py-6">
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 w-full max-w-md">
-      
-      <form id="reportForm" class="space-y-5">
-        
-        <!-- 1. เลือกประเภทงาน -->
-        <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-2">เลือกประเภทงานเพื่อแยกรายงาน <span class="text-red-500">*</span></label>
-          <div class="grid grid-cols-2 gap-3">
-            
-            <label class="job-type-card cursor-pointer">
-              <input type="radio" name="job_type" value="งานสวน" class="sr-only" required>
-              <div class="border-2 border-slate-200 rounded-xl p-4 text-center hover:border-emerald-500 transition-all">
-                <span class="text-2xl block mb-1">🌿</span>
-                <span class="text-sm font-semibold">งานสวน</span>
-              </div>
-            </label>
-            
-            <label class="job-type-card cursor-pointer">
-              <input type="radio" name="job_type" value="งานตัดหญ้า" class="sr-only">
-              <div class="border-2 border-slate-200 rounded-xl p-4 text-center hover:border-emerald-500 transition-all">
-                <span class="text-2xl block mb-1">✂️</span>
-                <span class="text-sm font-semibold">งานตัดหญ้า</span>
-              </div>
-            </label>
-
-          </div>
-        </div>
-
-        <!-- 2. เลือกชื่อพนักงาน -->
-        <div>
-          <label for="employeeName" class="block text-sm font-semibold text-slate-700 mb-1.5">ชื่อ-นามสกุลพนักงาน <span class="text-red-500">*</span></label>
-          <div class="relative">
-            <select id="employeeName" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" required>
-              <option value="">⏳ กำลังดึงรายชื่อพนักงานจากสเปรดชีต...</option>
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-              <i class="fa-solid fa-chevron-down text-sm"></i>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. เลือกสถานที่ปฏิบัติงาน -->
-        <div>
-          <label for="location" class="block text-sm font-semibold text-slate-700 mb-1.5">สถานที่ปฏิบัติงาน <span class="text-red-500">*</span></label>
-          <div class="relative">
-            <select id="location" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" required>
-              <option value="">⏳ กำลังดึงสถานที่จากสเปรดชีต...</option>
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-              <i class="fa-solid fa-chevron-down text-sm"></i>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. รายละเอียดงาน -->
-        <div>
-          <label for="details" class="block text-sm font-semibold text-slate-700 mb-1.5">รายละเอียดงานที่ทำวันนี้ <span class="text-red-500">*</span></label>
-          <textarea id="details" rows="3" placeholder="ระบุสิ่งที่ดำเนินการ เช่น ดำเนินการรดน้ำ ถอนวัชพืช และใส่ปุ๋ยบำรุงต้นไม้เสร็จสิ้นเรียบร้อยแล้ว..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all" required></textarea>
-        </div>
-
-        <!-- 5. แนบภาพหน้างานจริง (แนบได้สูงสุด 4 ภาพ) -->
-        <div>
-          <div class="flex justify-between items-center mb-1.5">
-            <label class="block text-sm font-semibold text-slate-700">ภาพถ่ายหน้างานจริง <span class="text-red-500">*</span></label>
-            <span id="imageCounter" class="text-xs font-semibold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">0 / 4 รูป</span>
-          </div>
-          
-          <div id="imageUploadArea" class="border-2 border-dashed border-slate-300 rounded-2xl p-5 text-center hover:bg-emerald-50/20 hover:border-emerald-500 transition-all cursor-pointer">
-            <input type="file" id="imageInput" accept="image/*" class="hidden">
-            
-            <div id="uploadPlaceholder">
-              <i class="fa-solid fa-camera text-4xl text-emerald-500 mb-2"></i>
-              <p class="text-sm font-bold text-slate-700">แตะเพื่อถ่ายภาพ หรือ เลือกรูป</p>
-              <p class="text-xs text-slate-400 mt-1">สามารถเลือกเพิ่มมุมมองได้สูงสุด 4 ภาพต่อการรายงานครับ</p>
-            </div>
-          </div>
-
-          <!-- กริดแสดงผลลัพธ์พรีวิวรูปภาพชุด -->
-          <div id="imagesGrid" class="grid grid-cols-2 gap-3 mt-4 hidden"></div>
-        </div>
-
-        <!-- ปุ่มส่งข้อมูล -->
-        <button type="submit" id="btnSubmit" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold py-4 px-4 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2">
-          <i class="fa-solid fa-paper-plane"></i>
-          <span>ส่งรายงานผลการปฏิบัติงาน</span>
-        </button>
-
-      </form>
-    </div>
-  </main>
-
-  <!-- ม่านโหมดรอประมวลผล -->
-  <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center flex-col z-50">
-    <div class="bg-white p-6 rounded-2xl flex flex-col items-center max-w-xs mx-auto text-center shadow-2xl">
-      <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mb-4"></div>
-      <p id="loadingText" class="font-bold text-slate-800 text-base">กำลังอัปโหลดข้อมูล...</p>
-      <p class="text-xs text-slate-500 mt-1">อัปโหลดภาพไป Google Drive และจัดส่งข้อความพุชเข้าห้องแชทไลน์</p>
-    </div>
-  </div>
-
-  <!-- กล่องแสดงสถานะสำเร็จ (Custom Modal) -->
-  <div id="statusModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl scale-95 transition-all">
-      <div id="modalIcon" class="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-3xl mb-4"></div>
-      <h3 id="modalTitle" class="text-lg font-bold text-slate-800 mb-1"></h3>
-      <p id="modalMessage" class="text-sm text-slate-500 mb-6 px-2"></p>
-      <button id="modalBtnClose" class="w-full py-3 rounded-xl font-bold text-white transition-all shadow-md focus:outline-none"></button>
-    </div>
-  </div>
-
-  <footer class="bg-slate-100 border-t border-slate-200 text-center py-4">
-    <p class="text-xs text-slate-500">&copy; 2026 ระบบรายงานการปฏิบัติงานสวนพนักงานของแท้เสถียรที่สุด</p>
-  </footer>
-
-  <script>
-    // ⚠️ นำลิงก์ Web App URL (ลงท้ายด้วย /exec) ที่ได้จาก Google Apps Script มาใส่ตรงนี้ครับ
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxfiR4thgORplawrhlHPkhU9fXw7v2XqtZtDjaGG0rv_dwfN691VS0hYbrKwHiQAw26/exec";
-
-    const reportForm = document.getElementById('reportForm');
-    const imageUploadArea = document.getElementById('imageUploadArea');
-    const imageInput = document.getElementById('imageInput');
-    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
-    const imagesGrid = document.getElementById('imagesGrid');
-    const imageCounter = document.getElementById('imageCounter');
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const loadingText = document.getElementById('loadingText');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ระบบพอร์ทัลรายงานการทำงานบนมือถือ (Mobile Work Report Portal)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PapaParse (CSV Parser) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     
-    const statusModal = document.getElementById('statusModal');
-    const modalIcon = document.getElementById('modalIcon');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalMessage = document.getElementById('modalMessage');
-    const modalBtnClose = document.getElementById('modalBtnClose');
-
-    let attachedImages = [];
-    const MAX_IMAGES = 4;
-
-    // 1. ดึงรายชื่อพนักงานและสถานที่จาก Google Sheet เพื่อแสดงผลหน้าเว็บ
-    window.addEventListener('DOMContentLoaded', async () => {
-      try {
-        const response = await fetch(WEB_APP_URL);
-        const data = await response.json();
-        
-        if (data.status === "success") {
-          // ดึงพนักงาน
-          const empSelect = document.getElementById('employeeName');
-          empSelect.innerHTML = '<option value="">-- เลือกชื่อ-นามสกุลของคุณ --</option>';
-          data.employees.forEach(name => {
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name;
-            empSelect.appendChild(opt);
-          });
-
-          // ดึงสถานที่ทำงาน
-          const locSelect = document.getElementById('location');
-          locSelect.innerHTML = '<option value="">-- เลือกสถานที่ทำงานวันนี้ --</option>';
-          data.locations.forEach(loc => {
-            const opt = document.createElement('option');
-            opt.value = loc;
-            opt.textContent = loc;
-            locSelect.appendChild(opt);
-          });
-        } else {
-          showModal("❌ โหลดข้อมูลล้มเหลว", "กรุณาตรวจสอบสิทธิ์การแชร์สเปรดชีตและ Apps Script", "error");
-        }
-      } catch (err) {
-        showModal("📡 ขาดสัญญาณการติดต่อ", "ไม่สามารถเข้าดึงข้อมูลพนักงานได้ โปรดตรวจสอบอินเทอร์เน็ตเครื่องของคุณครับ", "error");
-      }
-    });
-
-    // 2. แตะกรอบกล่องเพื่อเลือกรูปหรือถ่ายรูปกล้องหน้างานจริง
-    imageUploadArea.addEventListener('click', () => {
-      if (attachedImages.length >= MAX_IMAGES) {
-        showModal("⚠️ แฟ้มภาพเต็มโควตา", "สามารถถ่ายภาพปฏิบัติงานสูงสุดได้ 4 ภาพต่อการบันทึกรายงานครับ", "warning");
-        return;
-      }
-      imageInput.click();
-    });
-
-    // 3. ดักจับเมื่อมีการถ่ายรูปภาพสำเร็จ
-    imageInput.addEventListener('change', (e) => {
-      const files = e.target.files;
-      if (!files || files.length === 0) return;
-
-      const file = files[0];
-      const reader = new FileReader();
-      
-      reader.onload = function(event) {
-        const base64Str = event.target.result;
-        attachedImages.push(base64Str);
-        renderImages();
-        imageInput.value = ""; // เคลียร์ของเตรียมพร้อมถ่ายภาพชุดใบถัดไป
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // 4. แสดงภาพชุดทั้งหมดลงบนหน้าจอ Grid พรีวิวฟอร์ม
-    function renderImages() {
-      imageCounter.textContent = `${attachedImages.length} / ${MAX_IMAGES} รูป`;
-
-      if (attachedImages.length === 0) {
-        imagesGrid.innerHTML = "";
-        imagesGrid.classList.add('hidden');
-        uploadPlaceholder.classList.remove('hidden');
-        return;
-      }
-
-      uploadPlaceholder.classList.add('hidden');
-      imagesGrid.classList.remove('hidden');
-      imagesGrid.innerHTML = "";
-
-      attachedImages.forEach((imgBase64, index) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = "relative rounded-xl overflow-hidden border border-slate-200 bg-slate-50 aspect-video group";
-        
-        wrapper.innerHTML = `
-          <img class="w-full h-full object-cover" src="${imgBase64}" alt="ภาพถ่ายที่ ${index + 1}">
-          <button type="button" onclick="removeImage(${index})" class="absolute top-1.5 right-1.5 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-lg transition-all focus:outline-none text-xs">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        `;
-        imagesGrid.appendChild(wrapper);
-      });
-    }
-
-    // 5. ลบรูปรายใบออกจากหน้าพรีวิวฟอร์ม
-    window.removeImage = function(index) {
-      attachedImages.splice(index, 1);
-      renderImages();
-    };
-
-    // 6. กดซับมิทส่งข้อมูลฟอร์มพนักงานลงตารางและพุชแจ้งเตือน
-    reportForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const jobType = document.querySelector('input[name="job_type"]:checked');
-      if (!jobType) {
-        showModal("⚠️ ตรวจสอบการเลือก", "กรุณาเลือกว่าเป็นรายงาน 'งานสวน' หรือ 'งานตัดหญ้า' ก่อนส่งครับ", "warning");
-        return;
-      }
-
-      if (attachedImages.length === 0) {
-        showModal("📷 บังคับแนบรูปถ่ายงาน", "กรุณาเปิดกล้องและถ่ายภาพผลงานอย่างน้อย 1 รูปขึ้นไป", "warning");
-        return;
-      }
-
-      loadingOverlay.classList.remove('hidden');
-      loadingOverlay.classList.add('flex');
-      loadingText.textContent = `กำลังอัปโหลดรูป (0 / ${attachedImages.length} รูป)...`;
-
-      const payload = {
-        type: jobType.value,
-        name: document.getElementById('employeeName').value,
-        location: document.getElementById('location').value,
-        details: document.getElementById('details').value,
-        images: attachedImages
-      };
-
-      try {
-        const response = await fetch(WEB_APP_URL, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-        
-        const result = await response.json();
-        
-        loadingOverlay.classList.remove('flex');
-        loadingOverlay.classList.add('hidden');
-
-        if (result.status === "success") {
-          showModal(
-            "🎉 ส่งรายงานเสร็จสิ้น!", 
-            `บันทึกประวัติการทำงานลงแผ่นงาน "${jobType.value}" และจัดส่งความคืบหน้าแจ้งเตือนรูปกลุ่มเรียบร้อยแล้ว`, 
-            "success",
-            () => {
-              reportForm.reset();
-              attachedImages = [];
-              renderImages();
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                        },
+                        line: '#06c755' // LINE Theme Color
+                    },
+                    fontFamily: {
+                        sans: ['Sarabun', 'sans-serif'],
+                    }
+                }
             }
-          );
-        } else {
-          showModal("❌ ล้มเหลว", result.message || "เกิดความขัดข้องของระบบสเปรดชีต กรุณาทดลองใหม่อีกรอบ", "error");
         }
-      } catch (err) {
-        loadingOverlay.classList.remove('flex');
-        loadingOverlay.classList.add('hidden');
-        showModal("📡 การเชื่อมต่อขัดข้อง", "ไม่ได้รับสัญญาณตอบรับจากหลังบ้าน กรุณาตรวจสอบอินเทอร์เน็ตมือถือและส่งข้อมูลอีกรอบ", "error");
-      }
-    });
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f8fafc;
+            overscroll-behavior-y: contain;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .bottom-nav-padding {
+            padding-bottom: calc(env(safe-area-inset-bottom) + 4rem);
+        }
+        .bottom-nav-container {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800 pb-20">
 
-    // แสดงแจ้งเตือนหน้าต่างแบบเรียบหรูทดแทน alert()
-    function showModal(title, msg, type = "success", callback = null) {
-      modalTitle.textContent = title;
-      modalMessage.textContent = msg;
-      
-      modalIcon.className = "w-16 h-16 mx-auto rounded-full flex items-center justify-center text-3xl mb-4";
-      modalBtnClose.className = "w-full py-3 rounded-xl font-bold text-white transition-all shadow-md focus:outline-none";
+    <!-- Top Mobile Navigation Bar -->
+    <header class="bg-gradient-to-r from-primary-800 to-primary-600 text-white shadow-md sticky top-0 z-40">
+        <div class="px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <div class="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+                    <i class="fa-solid fa-leaf text-lg text-yellow-300"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold tracking-wide">พอร์ทัลรายงานการทำงาน</h1>
+                    <p class="text-[10px] text-primary-100 flex items-center gap-1 mt-0.5">
+                        <span class="inline-block w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse"></span>
+                        ฝ่ายสิ่งแวดล้อมและสวนสาธารณะ
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Quick System Info Badge -->
+            <div class="flex items-center gap-1 bg-black/15 px-2.5 py-1.5 rounded-full border border-white/10 text-[10px]">
+                <i class="fa-brands fa-line text-line text-xs"></i>
+                <span id="quick-line-id" class="font-mono font-medium max-w-[80px] truncate">กำลังโหลด...</span>
+            </div>
+        </div>
+    </header>
 
-      if (type === "success") {
-        modalIcon.classList.add('bg-green-100', 'text-green-600');
-        modalIcon.innerHTML = '<i class="fa-solid fa-circle-check animate-bounce"></i>';
-        modalBtnClose.classList.add('bg-green-600', 'hover:bg-green-700');
-        modalBtnClose.textContent = "ตกลง";
-      } else if (type === "warning") {
-        modalIcon.classList.add('bg-amber-100', 'text-amber-600');
-        modalIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-        modalBtnClose.classList.add('bg-amber-500', 'hover:bg-amber-600');
-        modalBtnClose.textContent = "ตรวจสอบข้อบกพร่อง";
-      } else {
-        modalIcon.classList.add('bg-red-100', 'text-red-600');
-        modalIcon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
-        modalBtnClose.classList.add('bg-red-600', 'hover:bg-red-700');
-        modalBtnClose.textContent = "ปิดหน้าต่าง";
-      }
+    <!-- Main Container for Mobile screens -->
+    <main class="flex-grow w-full max-w-md mx-auto p-4 bottom-nav-padding">
+        
+        <!-- Tab 1: Form (Main page for worker reporting) -->
+        <div id="tab-add-record" class="tab-content space-y-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-3">
+                    <div class="w-9 h-9 rounded-xl bg-line/10 flex items-center justify-center text-line">
+                        <i class="fa-solid fa-paper-plane text-base"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-700 text-sm">ส่งรายงานปฏิบัติงานใหม่</h4>
+                        <p class="text-[10px] text-slate-400">ระบุรายละเอียดการปฏิบัติงานเพื่อบันทึกและแจ้งเตือนกลุ่ม LINE</p>
+                    </div>
+                </div>
 
-      statusModal.classList.remove('hidden');
-      statusModal.classList.add('flex');
+                <form id="new-record-form" onsubmit="handleAddNewRecord(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1.5">ประเภทงาน *</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center justify-center gap-2 p-3 border-2 border-primary-500 bg-primary-50 text-primary-700 rounded-xl cursor-pointer transition-all text-xs font-semibold" id="lbl-type-garden">
+                                <input type="radio" name="new-type" value="garden" checked class="hidden" onchange="toggleFormTypeUI('garden')">
+                                <i class="fa-solid fa-seedling text-emerald-600"></i> งานสวน
+                            </label>
+                            <label class="flex items-center justify-center gap-2 p-3 border border-slate-200 text-slate-600 rounded-xl cursor-pointer transition-all hover:bg-slate-50 text-xs font-semibold" id="lbl-type-grass">
+                                <input type="radio" name="new-type" value="grass" class="hidden" onchange="toggleFormTypeUI('grass')">
+                                <i class="fa-solid fa-scissors text-lime-600"></i> งานตัดหญ้า
+                            </label>
+                        </div>
+                    </div>
 
-      modalBtnClose.onclick = () => {
-        statusModal.classList.remove('flex');
-        statusModal.classList.add('hidden');
-        if (callback) callback();
-      };
-    }
-  </script>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1.5">วัน/เดือน/ปี *</label>
+                            <input type="text" id="new-date" placeholder="เช่น 8/6/2026" required class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1.5">ผู้รายงาน / คนงาน *</label>
+                            <select id="new-employee" required class="w-full px-2 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1.5">สถานที่ปฏิบัติงาน *</label>
+                        <select id="new-location" required class="w-full px-2 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1.5">แนบรูปถ่ายหลักฐานจากมือถือ *</label>
+                        <div class="space-y-2">
+                            <!-- Real Mobile File Input -->
+                            <input type="file" id="new-image-file" accept="image/*" capture="environment" class="hidden" onchange="handleMobileImageSelect(this)">
+                            
+                            <!-- Custom Designed Camera Trigger Button -->
+                            <button type="button" onclick="triggerMobileCamera()" class="w-full py-4 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border-2 border-dashed border-slate-200 hover:border-primary-500 text-slate-600 rounded-2xl text-xs font-semibold flex flex-col items-center justify-center gap-2 transition-all">
+                                <div class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center text-primary-600">
+                                    <i class="fa-solid fa-camera text-base"></i>
+                                </div>
+                                <span>กดเพื่อถ่ายภาพใหม่ หรือ เลือกรูปจากมือถือ</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="image-preview-container" class="hidden border border-slate-100 p-2 rounded-xl bg-slate-50 relative">
+                        <span class="text-[9px] font-bold text-slate-400 block mb-1">ตัวอย่างภาพที่จะส่งเข้า LINE:</span>
+                        <img id="form-image-preview" src="" class="h-44 w-full object-cover rounded-lg">
+                        <button type="button" onclick="clearImagePreview()" class="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+
+                    <button type="submit" id="btn-submit-report" class="w-full py-3 bg-line hover:bg-emerald-600 active:bg-emerald-700 text-white font-bold rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2">
+                        <span id="btn-submit-text" class="flex items-center gap-2">
+                            <i class="fa-brands fa-line text-lg"></i>
+                            ส่งรายงานพร้อมส่งเข้ากลุ่ม LINE
+                        </span>
+                        <span id="btn-submit-loading" class="hidden flex items-center gap-2">
+                            <i class="fa-solid fa-circle-notch animate-spin text-lg"></i>
+                            กำลังอัปโหลดรูปภาพและส่งข้อมูล...
+                        </span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tab 2: Logs (History of submissions) -->
+        <div id="tab-logs" class="tab-content hidden space-y-4">
+            <!-- Search & Filter panel (simplified for mobile) -->
+            <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                <div class="relative">
+                    <input type="text" id="filter-search" oninput="applyFilters()" placeholder="พิมพ์ค้นหา วันที่, คนงาน, สถานที่..." class="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <select id="filter-type" onchange="applyFilters()" class="px-2 py-1.5 text-[11px] bg-slate-50 border border-slate-200 rounded-lg">
+                        <option value="all">ทุกประเภทงาน</option>
+                        <option value="garden">งานสวน</option>
+                        <option value="grass">งานตัดหญ้า</option>
+                    </select>
+                    <select id="filter-employee" onchange="applyFilters()" class="px-2 py-1.5 text-[11px] bg-slate-50 border border-slate-200 rounded-lg">
+                        <option value="all">พนักงานทุกคน</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- List of work logs -->
+            <div class="space-y-2.5" id="logs-mobile-list">
+                <!-- Injected dynamically as mobile cards -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="logs-empty-state" class="hidden py-8 text-center text-slate-400">
+                <i class="fa-regular fa-folder-open text-4xl mb-2 text-slate-300"></i>
+                <p class="text-xs font-semibold">ไม่พบข้อมูลตามเงื่อนไขที่กรอง</p>
+            </div>
+        </div>
+
+        <!-- Tab 3: Import/Export (CSV tools) -->
+        <div id="tab-import-export" class="tab-content hidden space-y-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <div>
+                    <h4 class="font-bold text-slate-700 text-xs">นำเข้าไฟล์ CSV งานดั้งเดิม</h4>
+                    <p class="text-[10px] text-slate-400">จัดการอัปเดตไฟล์พนักงาน, สถานที่ หรือประวัติรายงาน</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-2.5 text-xs">
+                    <button onclick="triggerFileInput('file-primary-data')" class="p-3 rounded-xl border border-dashed border-slate-200 bg-slate-5/50 flex items-center justify-between">
+                        <span class="font-semibold text-slate-600"><i class="fa-solid fa-address-book text-sky-500 mr-2"></i>รายชื่อพนักงาน / สถานที่</span>
+                        <span class="text-[10px] bg-slate-200 px-2 py-0.5 rounded" id="status-primary-csv">ยังไม่ได้อัปโหลด</span>
+                    </button>
+                    <button onclick="triggerFileInput('file-work-data')" class="p-3 rounded-xl border border-dashed border-slate-200 bg-slate-5/50 flex items-center justify-between">
+                        <span class="font-semibold text-slate-600"><i class="fa-solid fa-file-invoice text-emerald-500 mr-2"></i>ข้อมูลงานสวน / งานตัดหญ้า</span>
+                        <span class="text-[10px] bg-slate-200 px-2 py-0.5 rounded" id="status-work-csv">ยังไม่ได้อัปโหลด</span>
+                    </button>
+                </div>
+
+                <input type="file" id="file-primary-data" accept=".csv" class="hidden" onchange="handleCSVUpload(this, 'primary')">
+                <input type="file" id="file-work-data" accept=".csv" class="hidden" onchange="handleCSVUpload(this, 'work')">
+            </div>
+
+            <!-- Export Hub -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <div>
+                    <h4 class="font-bold text-slate-700 text-xs">ดาวน์โหลดข้อมูลออกเป็นไฟล์ CSV</h4>
+                    <p class="text-[10px] text-slate-400">เซฟข้อมูลงานสวนและงานตัดหญ้าเพื่อบันทึกประวัติ</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <button onclick="exportTableToCSV('gardening')" class="p-3 bg-slate-50 rounded-xl hover:bg-slate-100 text-left flex flex-col justify-between h-20 border border-slate-100">
+                        <i class="fa-solid fa-seedling text-emerald-600"></i>
+                        <div>
+                            <span class="font-bold block">งานสวน.csv</span>
+                            <span class="text-[9px] text-slate-400" id="export-cnt-gardening">0 แถว</span>
+                        </div>
+                    </button>
+                    <button onclick="exportTableToCSV('grasscutting')" class="p-3 bg-slate-50 rounded-xl hover:bg-slate-100 text-left flex flex-col justify-between h-20 border border-slate-100">
+                        <i class="fa-solid fa-scissors text-lime-600"></i>
+                        <div>
+                            <span class="font-bold block">งานตัดหญ้า.csv</span>
+                            <span class="text-[9px] text-slate-400" id="export-cnt-grasscutting">0 แถว</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Settings & System -->
+        <div id="tab-system" class="tab-content hidden space-y-4">
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+                <h4 class="font-bold text-slate-700 text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-line"></i>
+                    ค่ากำหนดการส่งข้อความจริงเข้าระบบภายนอก
+                </h4>
+                
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="block font-semibold text-slate-500 mb-1">LINE Group Chat ID (ส่งเข้าระบบจำลอง)</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="sys-line-id" class="flex-grow px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono">
+                            <button onclick="updateSystemSetting('LINE_GROUP_ID')" class="px-3 bg-line text-white rounded-xl font-bold">บันทึก</button>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-3">
+                        <label class="block font-semibold text-slate-600 mb-1 flex items-center gap-1.5">
+                            <span class="inline-block w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping"></span>
+                            Google Apps Script Web App URL (ระบบเชื่อมต่อจริง)
+                        </label>
+                        <p class="text-[9px] text-slate-400 mb-1.5">หากใส่ลิงก์นี้ ระบบจะอัปโหลดข้อมูลจริงเข้า Google Sheets และส่งข้อความ LINE อัตโนมัติทันที</p>
+                        <div class="flex gap-2">
+                            <input type="url" id="sys-gas-url" placeholder="https://script.google.com/macros/s/.../exec" class="flex-grow px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono">
+                            <button onclick="updateSystemSetting('GAS_WEB_URL')" class="px-3 bg-sky-600 hover:bg-sky-700 text-white rounded-xl font-bold">บันทึก URL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Logs tracking webhook test -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-bold text-slate-700 text-xs">บันทึกประวัติการส่งข้อมูล (LINE & Server logs)</h4>
+                    <span class="text-[9px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded">ดีบักเกอร์</span>
+                </div>
+                
+                <div class="max-h-52 overflow-y-auto custom-scrollbar border border-slate-100 rounded-xl text-[10px] font-mono divide-y divide-slate-100 bg-slate-50 p-2" id="system-logs-body">
+                    <!-- Logs loaded dynamically -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (Mobile Native look) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 shadow-lg z-50 bottom-nav-container">
+        <div class="max-w-md mx-auto flex justify-around items-center h-16 text-slate-400">
+            <button onclick="switchTab('add-record')" id="btn-add-record" class="nav-btn-mobile flex flex-col items-center justify-center flex-grow py-2 text-line">
+                <i class="fa-solid fa-square-plus text-xl"></i>
+                <span class="text-[10px] font-semibold mt-1">รายงานใหม่</span>
+            </button>
+            <button onclick="switchTab('logs')" id="btn-logs" class="nav-btn-mobile flex flex-col items-center justify-center flex-grow py-2">
+                <i class="fa-solid fa-list-check text-xl"></i>
+                <span class="text-[10px] font-semibold mt-1">ประวัติงาน</span>
+            </button>
+            <button onclick="switchTab('import-export')" id="btn-import-export" class="nav-btn-mobile flex flex-col items-center justify-center flex-grow py-2">
+                <i class="fa-solid fa-file-csv text-xl"></i>
+                <span class="text-[10px] font-semibold mt-1">อัปเดตไฟล์</span>
+            </button>
+            <button onclick="switchTab('system')" id="btn-system" class="nav-btn-mobile flex flex-col items-center justify-center flex-grow py-2">
+                <i class="fa-solid fa-sliders text-xl"></i>
+                <span class="text-[10px] font-semibold mt-1">ตั้งค่าระบบ</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Image Lightbox Modal -->
+    <div id="image-modal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 hidden" onclick="closeImageModal()">
+        <div class="relative max-w-full max-h-full flex flex-col items-center">
+            <img id="modal-img" src="" alt="หลักฐานเต็ม" class="max-h-[80vh] rounded-xl object-contain">
+            <div class="mt-3 text-center bg-black/60 px-4 py-1.5 rounded-full border border-white/10 max-w-[90%]">
+                <p id="modal-caption-title" class="text-white text-xs font-bold"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Beautiful In-app Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-20 left-4 right-4 z-50 flex flex-col gap-2 max-w-md mx-auto pointer-events-none"></div>
+
+    <!-- JS Logic and Data -->
+    <script>
+        // Data Store
+        const state = {
+            config: [
+                { "คีย์ระบบ": "LINE_GROUP_ID", "ค่าระบบ": "C506b753d99a48567be7bec8f9c4d493a" },
+                { "คีย์ระบบ": "WEB_PAGE_URL", "ค่าระบบ": "https://final198965-maker.github.io/engee/" },
+                { "คีย์ระบบ": "GAS_WEB_URL", "ค่าระบบ": "" } // URL ของจริงที่เราตั้งค่าได้
+            ],
+            logs: [
+                { "วัน-เวลาเกิดปัญหา": "8/6/2026, 09:17:53", "ข้อความดีบักระบบ": 'LINE Push Pushed to Group (C506b753d99a48567be7bec8f9c4d493a): {"sent":true,"type":"image"}' },
+                { "วัน-เวลาเกิดปัญหา": "9/6/2026, 08:31:02", "ข้อความดีบักระบบ": 'LINE Notification Connected: Setup Group ID OK.' }
+            ],
+            employees: [
+                "นาย คณิต สีสาม", "นาย มะยง ศรีทอง", "น.ส. คนึงนิจ อนุศรี", 
+                "นาย มนตรี ภาคพิเศษ", "นาย ยงยุทธ ขุนอาจ", "นาย นิรัตศัย ทองเปรม", 
+                "นาย ทรงพล ศรีบุญ", "นาย ธวัชชัย ขุนอาจ"
+            ],
+            locations: [
+                "สำนักงานเทศบาล", "ถนนชาติอนุสรณ์", "ถนนบางกะจะ", 
+                "สวนสาธารณะสามแยกชาติอนุสรณ์", "สวนสาธารณะท่าแฉลบ", 
+                "สวนสาธารณะหน้าสำนักงานตำรวจน้ำ", "ถนนจุลบรรพต ซ.3", 
+                "ถนนจุุลบรรพต ซ.5", "ถนนเปรมประชา", 
+                "ศูนย์เด็กเล็กภายในสำนักงานเทศบาล", "สวนสาธารณะวัดโบสถ์", 
+                "ทำความสะอาดห้องน้ำ สวนสาธารณะท่าแฉลบ", "สวนหย่อม ถนนชายน้ำ ม.1", 
+                "รับผิดชอบต้นไม้ ถนนจันทบุรี-ท่าใหม่", "รับผิดชอบต้นไม้ ถนนจันทบุรี-ท่าแฉลบ"
+            ],
+            gardening: [
+                { "วัน/เดือน/ปี": "8/6/2026", "ชื่อ-นามสกุล": "นาย คณิต สีสาม", "สถานที่": "สวนสาธารณะสามแยกชาติอนุสรณ์", "ลิ้งรูปภาพ": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=400&q=80" },
+                { "วัน/เดือน/ปี": "8/6/2026", "ชื่อ-นามสกุล": "น.ส. คนึงนิจ อนุศรี", "สถานที่": "สวนสาธารณะท่าแฉลบ", "ลิ้งรูปภาพ": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=400&q=80" }
+            ],
+            grasscutting: [
+                { "วัน/เดือน/ปี": "9/6/2026", "ชื่อ-นามสกุล": "นาย มะยง ศรีทอง", "สถานที่": "ถนนบางกะจะ", "ลิ้งรูปภาพ": "https://images.unsplash.com/photo-1533460004989-cef01064af7e?auto=format&fit=crop&w=400&q=80" }
+            ]
+        };
+
+        let currentTab = 'add-record';
+        let currentFormImageBase64 = '';
+
+        window.onload = function() {
+            initApp();
+        };
+
+        function initApp() {
+            updateQuickConfigUI();
+            populateSelectOptions();
+            renderLogsList();
+            renderSystemLogs();
+            renderExportCounters();
+
+            // Setup Default Date in Form
+            const today = new Date();
+            document.getElementById('new-date').value = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+        }
+
+        function updateQuickConfigUI() {
+            const lineIdObj = state.config.find(item => item["คีย์ระบบ"] === "LINE_GROUP_ID");
+            const lineVal = lineIdObj ? lineIdObj["ค่าระบบ"] : 'ไม่มีกลุ่ม';
+
+            const gasUrlObj = state.config.find(item => item["คีย์ระบบ"] === "GAS_WEB_URL");
+            const gasVal = gasUrlObj ? gasUrlObj["ค่าระบบ"] : '';
+
+            document.getElementById('quick-line-id').textContent = lineVal;
+            document.getElementById('sys-line-id').value = lineVal;
+            document.getElementById('sys-gas-url').value = gasVal;
+        }
+
+        // Beautiful Mobile Notification Toasts
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto ${
+                type === 'success' ? 'bg-emerald-500 text-white border-emerald-600' : 
+                type === 'info' ? 'bg-sky-500 text-white border-sky-600' : 'bg-red-500 text-white border-red-600'
+            }`;
+
+            const icon = type === 'success' ? 'fa-circle-check' : type === 'info' ? 'fa-circle-info' : 'fa-circle-exclamation';
+
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-lg"></i>
+                <div class="text-xs font-semibold">${message}</div>
+            `;
+
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => { toast.remove(); }, 300);
+            }, 4000);
+        }
+
+        // Tab switches on mobile bottoms
+        function switchTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
+                btn.className = "nav-btn-mobile flex flex-col items-center justify-center flex-grow py-2 text-slate-400";
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.className = "nav-btn-mobile flex flex-col items-center justify-center flex-grow py-2 text-line";
+            }
+
+            if (tabId === 'logs') {
+                applyFilters();
+            } else if (tabId === 'import-export') {
+                renderExportCounters();
+            } else if (tabId === 'system') {
+                renderSystemLogs();
+            }
+        }
+
+        function populateSelectOptions() {
+            const filterEmployee = document.getElementById('filter-employee');
+            const newEmployee = document.getElementById('new-employee');
+            const newLocation = document.getElementById('new-location');
+
+            filterEmployee.innerHTML = '<option value="all">พนักงานทุกคน</option>';
+            newEmployee.innerHTML = '<option value="" disabled selected>เลือกชื่อคนงาน...</option>';
+            newLocation.innerHTML = '<option value="" disabled selected>เลือกสถานที่สวน/ถนน...</option>';
+
+            state.employees.forEach(emp => {
+                filterEmployee.add(new Option(emp, emp));
+                newEmployee.add(new Option(emp, emp));
+            });
+
+            state.locations.forEach(loc => {
+                newLocation.add(new Option(loc, loc));
+            });
+        }
+
+        // Get united log data without extra fields
+        function getUnifiedLogs() {
+            const gardening = state.gardening.map(item => ({ ...item, type: 'garden', typeLabel: 'งานสวน' }));
+            const grasscutting = state.grasscutting.map(item => ({ ...item, type: 'grass', typeLabel: 'งานตัดหญ้า' }));
+            return [...gardening, ...grasscutting];
+        }
+
+        let filteredLogsCache = [];
+
+        function applyFilters() {
+            const searchVal = document.getElementById('filter-search').value.toLowerCase().trim();
+            const typeVal = document.getElementById('filter-type').value;
+            const empVal = document.getElementById('filter-employee').value;
+
+            const allLogs = getUnifiedLogs();
+
+            filteredLogsCache = allLogs.filter(log => {
+                if (typeVal !== 'all' && log.type !== typeVal) return false;
+                if (empVal !== 'all' && log["ชื่อ-นามสกุล"] !== empVal) return false;
+
+                if (searchVal) {
+                    const matchText = `${log["ชื่อ-นามสกุล"]} ${log["สถานที่"]} ${log["วัน/เดือน/ปี"]}`.toLowerCase();
+                    if (!matchText.includes(searchVal)) return false;
+                }
+                return true;
+            });
+
+            filteredLogsCache.reverse(); // Newest first
+            renderLogsList();
+        }
+
+        // Render mobile log cards
+        function renderLogsList() {
+            const listContainer = document.getElementById('logs-mobile-list');
+            const emptyState = document.getElementById('logs-empty-state');
+            
+            listContainer.innerHTML = '';
+
+            const renderSource = currentTab === 'logs' ? filteredLogsCache : getUnifiedLogs().slice().reverse();
+
+            if (renderSource.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            renderSource.forEach((log, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-3.5 rounded-xl border border-slate-100 shadow-sm flex gap-3.5 items-center justify-between";
+                
+                const typeColor = log.type === 'garden' ? 'bg-emerald-100 text-emerald-800' : 'bg-lime-100 text-lime-800';
+                
+                // Image or Fallback SVG Icon
+                let imageEl = '';
+                if (log["ลิ้งรูปภาพ"] && log["ลิ้งรูปภาพ"].startsWith('http')) {
+                    imageEl = `<img src="${log["ลิ้งรูปภาพ"]}" class="w-12 h-12 object-cover rounded-lg border border-slate-100 cursor-pointer" onclick="openImageModal('${log["ลิ้งรูปภาพ"]}', '${log["ชื่อ-นามสกุล"]}')">`;
+                } else if (log["ลิ้งรูปภาพ"] && log["ลิ้งรูปภาพ"].startsWith('data:image')) {
+                    imageEl = `<img src="${log["ลิ้งรูปภาพ"]}" class="w-12 h-12 object-cover rounded-lg border border-slate-100 cursor-pointer" onclick="openImageModal('${log["ลิ้งรูปภาพ"]}', '${log["ชื่อ-นามสกุล"]}')">`;
+                } else {
+                    imageEl = `
+                        <div class="w-12 h-12 rounded-lg bg-slate-50 border border-slate-100 flex flex-col items-center justify-center text-slate-400 cursor-pointer" onclick="showSampleUnsplashImage('${log.type}', '${log["ชื่อ-นามสกุล"]}')">
+                            <i class="fa-solid ${log.type === 'garden' ? 'fa-seedling' : 'fa-scissors'} text-sm text-primary-500"></i>
+                            <span class="text-[8px] mt-0.5">จำลอง</span>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        ${imageEl}
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span class="px-1.5 py-0.5 rounded text-[8px] font-bold ${typeColor}">${log.typeLabel}</span>
+                                <span class="text-[9px] text-slate-400 font-mono">${log["วัน/เดือน/ปี"]}</span>
+                            </div>
+                            <h5 class="text-xs font-bold text-slate-700 mt-1 truncate">${log["ชื่อ-นามสกุล"]}</h5>
+                            <p class="text-[10px] text-slate-500 truncate flex items-center gap-1 mt-0.5">
+                                <i class="fa-solid fa-map-pin text-rose-500 text-[8px]"></i>
+                                ${log["สถานที่"]}
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="deleteLogRecord('${log.type}', ${index})" class="text-red-500 bg-red-50 hover:bg-red-100 w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                    </button>
+                `;
+                listContainer.appendChild(card);
+            });
+        }
+
+        function showSampleUnsplashImage(type, employee) {
+            const imgUrl = type === 'garden' ? 
+                'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80' : 
+                'https://images.unsplash.com/photo-1533460004989-cef01064af7e?auto=format&fit=crop&w=800&q=80';
+            openImageModal(imgUrl, employee);
+        }
+
+        function deleteLogRecord(type, index) {
+            const arr = type === 'garden' ? state.gardening : state.grasscutting;
+            const targetLog = currentTab === 'logs' ? filteredLogsCache[index] : getUnifiedLogs().slice().reverse()[index];
+            
+            if (!targetLog) return;
+
+            const originalIdx = arr.findIndex(item => 
+                item["วัน/เดือน/ปี"] === targetLog["วัน/เดือน/ปี"] &&
+                item["ชื่อ-นามสกุล"] === targetLog["ชื่อ-นามสกุล"] &&
+                item["สถานที่"] === targetLog["สถานที่"]
+            );
+
+            if (originalIdx > -1) {
+                arr.splice(originalIdx, 1);
+                showToast('ลบรายการรายงานแล้ว', 'success');
+                applyFilters();
+                renderExportCounters();
+            }
+        }
+
+        function triggerMobileCamera() {
+            document.getElementById('new-image-file').click();
+        }
+
+        function handleMobileImageSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('กรุณาเลือกไฟล์ที่เป็นรูปภาพเท่านั้น', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentFormImageBase64 = e.target.result;
+                
+                document.getElementById('image-preview-container').classList.remove('hidden');
+                document.getElementById('form-image-preview').src = currentFormImageBase64;
+                showToast('ดึงภาพจากมือถือสำเร็จ!', 'success');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        function clearImagePreview() {
+            currentFormImageBase64 = '';
+            document.getElementById('new-image-file').value = '';
+            document.getElementById('image-preview-container').classList.add('hidden');
+            document.getElementById('form-image-preview').src = '';
+        }
+
+        function toggleFormTypeUI(selectedType) {
+            const lblGarden = document.getElementById('lbl-type-garden');
+            const lblGrass = document.getElementById('lbl-type-grass');
+
+            if (selectedType === 'garden') {
+                lblGarden.className = "flex items-center justify-center gap-2 p-3 border-2 border-primary-500 bg-primary-50 text-primary-700 rounded-xl cursor-pointer text-xs font-semibold";
+                lblGrass.className = "flex items-center justify-center gap-2 p-3 border border-slate-200 text-slate-600 rounded-xl cursor-pointer text-xs font-semibold hover:bg-slate-50";
+            } else {
+                lblGrass.className = "flex items-center justify-center gap-2 p-3 border-2 border-primary-500 bg-primary-50 text-primary-700 rounded-xl cursor-pointer text-xs font-semibold";
+                lblGarden.className = "flex items-center justify-center gap-2 p-3 border border-slate-200 text-slate-600 rounded-xl cursor-pointer text-xs font-semibold hover:bg-slate-50";
+            }
+        }
+
+        // Fetch API with Exponential Backoff retry strategy for robust mobile connectivity
+        async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) throw new Error(`HTTP status: ${response.status}`);
+                return await response.json();
+            } catch (error) {
+                if (retries <= 1) throw error;
+                // Wait for delay then retry
+                await new Promise(resolve => setTimeout(resolve, delay));
+                return fetchWithRetry(url, options, retries - 1, delay * 2);
+            }
+        }
+
+        async function handleAddNewRecord(event) {
+            event.preventDefault();
+
+            const type = document.querySelector('input[name="new-type"]:checked').value;
+            const date = document.getElementById('new-date').value.trim();
+            const employee = document.getElementById('new-employee').value;
+            const location = document.getElementById('new-location').value;
+
+            if (!employee || !location) {
+                showToast('กรุณาระบุคนงานและสถานที่ก่อนส่ง', 'error');
+                return;
+            }
+
+            if (!currentFormImageBase64) {
+                showToast('กรุณาแนบรูปถ่ายหลักฐานการทำงานด้วยครับ', 'error');
+                return;
+            }
+
+            // UI feedback
+            const btnSubmit = document.getElementById('btn-submit-report');
+            const submitText = document.getElementById('btn-submit-text');
+            const submitLoading = document.getElementById('btn-submit-loading');
+
+            btnSubmit.disabled = true;
+            submitText.classList.add('hidden');
+            submitLoading.classList.remove('hidden');
+
+            const newObj = {
+                "วัน/เดือน/ปี": date,
+                "ชื่อ-นามสกุล": employee,
+                "สถานที่": location,
+                "ลิ้งรูปภาพ": currentFormImageBase64
+            };
+
+            // Local State Save
+            if (type === 'garden') {
+                state.gardening.push(newObj);
+            } else {
+                state.grasscutting.push(newObj);
+            }
+
+            // Real Server/GAS Post Integration Check
+            const gasUrlObj = state.config.find(item => item["คีย์ระบบ"] === "GAS_WEB_URL");
+            const apiEndpoint = gasUrlObj ? gasUrlObj["ค่าระบบ"] : '';
+            const timestamp = new Date().toLocaleString('th-TH');
+
+            let serverLoggedMsg = "";
+
+            if (apiEndpoint && apiEndpoint.startsWith('http')) {
+                try {
+                    // Call API with automatic exponential retry
+                    const payload = {
+                        action: 'submitWorkReport',
+                        type: type,
+                        date: date,
+                        employee: employee,
+                        location: location,
+                        imageBase64: currentFormImageBase64
+                    };
+
+                    const result = await fetchWithRetry(apiEndpoint, {
+                        method: 'POST',
+                        mode: 'no-cors', // standard GAS deployment requires no-cors sometimes, or processes with preflight
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    serverLoggedMsg = `🟢 [REAL SERVER OK] ส่งข้อมูลเรียบร้อย: อัปโหลดรูปภาพขนาด ${Math.round(currentFormImageBase64.length / 1024)} KB และส่งข้อมูลเข้า Google Sheets/LINE แล้ว`;
+                    showToast('อัปโหลดและส่งรายงานเข้ากลุ่มไลน์เรียบร้อย!', 'success');
+
+                } catch (err) {
+                    serverLoggedMsg = `🔴 [REAL SERVER ERROR] เกิดข้อผิดพลาดหลังบ้าน: ${err.message}. ข้อมูลจะถูกบันทึกไว้ในเครื่องของคุณชั่วคราว`;
+                    showToast('เชื่อมต่อเซิร์ฟเวอร์ผิดพลาด แต่บันทึกข้อมูลในเครื่องแล้ว', 'info');
+                }
+            } else {
+                // Mock notification if no API Configured
+                const lineGroupObj = state.config.find(item => item["คีย์ระบบ"] === "LINE_GROUP_ID");
+                const targetGroupId = lineGroupObj ? lineGroupObj["ค่าระบบ"] : 'No-ID';
+                
+                serverLoggedMsg = `[LINE Group Notify Simulation] 🟢 ส่งรายงานสำเร็จไปยังกลุ่ม (${targetGroupId}): \\n📌 ประเภท: ${type === 'garden' ? 'งานสวน' : 'งานตัดหญ้า'}\\n👤 คนงาน: ${employee}\\n📍 พิกัดปฏิบัติงาน: ${location}\\n🖼️ ภาพแนบ: [ข้อมูลรูปภาพจริงจากโทรศัพท์มือถือ]`;
+                showToast(`ส่งรายงานและจำลองข้อมูลส่งสำเร็จ!`, 'success');
+            }
+
+            // Store status back to system logs
+            state.logs.push({
+                "วัน-เวลาเกิดปัญหา": timestamp,
+                "ข้อความดีบักระบบ": serverLoggedMsg
+            });
+
+            // Restore UI Buttons
+            btnSubmit.disabled = false;
+            submitText.classList.remove('hidden');
+            submitLoading.classList.add('hidden');
+
+            // Clean Form & reset preview
+            clearImagePreview();
+            document.getElementById('new-employee').selectedIndex = 0;
+            document.getElementById('new-location').selectedIndex = 0;
+
+            // Route to Logs tab automatically
+            switchTab('logs');
+        }
+
+        // System Config edits
+        function updateSystemSetting(key) {
+            let value = "";
+            if (key === 'LINE_GROUP_ID') {
+                value = document.getElementById('sys-line-id').value.trim();
+            } else if (key === 'GAS_WEB_URL') {
+                value = document.getElementById('sys-gas-url').value.trim();
+            }
+
+            const target = state.config.find(item => item["คีย์ระบบ"] === key);
+            if (target) {
+                target["ค่าระบบ"] = value;
+            } else {
+                state.config.push({ "คีย์ระบบ": key, "ค่าระบบ": value });
+            }
+
+            state.logs.push({
+                "วัน-เวลาเกิดปัญหา": new Date().toLocaleString('th-TH'),
+                "ข้อความดีบักระบบ": `ตั้งค่าระบบใหม่: ปรับปรุง ${key} เป็น "${value.substring(0, 40)}..."`
+            });
+
+            updateQuickConfigUI();
+            renderSystemLogs();
+            showToast('ปรับปรุงข้อมูลและบันทึกระบบเรียบร้อย', 'success');
+        }
+
+        function renderSystemLogs() {
+            const container = document.getElementById('system-logs-body');
+            container.innerHTML = '';
+
+            state.logs.slice().reverse().forEach(log => {
+                const item = document.createElement('div');
+                item.className = "py-1.5 space-y-0.5 border-b border-slate-100 last:border-none";
+                item.innerHTML = `
+                    <div class="text-[9px] text-slate-400">${log["วัน-เวลาเกิดปัญหา"]}</div>
+                    <div class="text-slate-600 break-all">${log["ข้อความดีบักระบบ"]}</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function renderExportCounters() {
+            document.getElementById('export-cnt-gardening').textContent = `${state.gardening.length} แถว`;
+            document.getElementById('export-cnt-grasscutting').textContent = `${state.grasscutting.length} แถว`;
+        }
+
+        function triggerFileInput(id) {
+            document.getElementById(id).click();
+        }
+
+        function handleCSVUpload(input, section) {
+            const file = input.files[0];
+            if (!file) return;
+
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    processCSVResults(results.data, file.name, section);
+                },
+                error: function(err) {
+                    showToast(`ไม่สามารถประมวลไฟล์ CSV: ${err.message}`, 'error');
+                }
+            });
+            input.value = '';
+        }
+
+        function processCSVResults(data, fileName, section) {
+            if (data.length === 0) return;
+
+            const headers = Object.keys(data[0]);
+
+            if (headers.includes('ชื่อพนักงาน')) {
+                state.employees = data.map(row => row['ชื่อพนักงาน']).filter(Boolean);
+                document.getElementById('status-primary-csv').textContent = 'นำเข้าพนักงานแล้ว';
+                showToast(`นำเข้าคนงาน ${state.employees.length} รายการ`, 'success');
+            } 
+            else if (headers.includes('ชื่อสถานที่')) {
+                state.locations = data.map(row => row['ชื่อสถานที่']).filter(Boolean);
+                document.getElementById('status-primary-csv').textContent = 'นำเข้าพิกัดแล้ว';
+                showToast(`นำเข้าสถานที่ ${state.locations.length} รายการ`, 'success');
+            }
+            else if (headers.includes('สถานที่')) {
+                if (fileName.includes('สวน')) {
+                    state.gardening = data;
+                    document.getElementById('status-work-csv').textContent = 'นำเข้าสวนแล้ว';
+                    showToast(`อัปเดตงานสวน ${state.gardening.length} แถว`, 'success');
+                } else if (fileName.includes('ตัดหญ้า')) {
+                    state.grasscutting = data;
+                    document.getElementById('status-work-csv').textContent = 'นำเข้าหญ้าแล้ว';
+                    showToast(`อัปเดตงานตัดหญ้า ${state.grasscutting.length} แถว`, 'success');
+                }
+            }
+
+            populateSelectOptions();
+            applyFilters();
+            renderExportCounters();
+        }
+
+        function exportTableToCSV(type) {
+            let csvData = [];
+            let fileName = "";
+
+            if (type === 'gardening') {
+                csvData = state.gardening;
+                fileName = "รายงานการทำงานพร้อมรูป - งานสวน.csv";
+            } else if (type === 'grasscutting') {
+                csvData = state.grasscutting;
+                fileName = "รายงานการทำงานพร้อมรูป - งานตัดหญ้า.csv";
+            }
+
+            if (csvData.length === 0) {
+                showToast('ไม่มีข้อมูลสำหรับส่งออก', 'error');
+                return;
+            }
+
+            const csv = Papa.unparse(csvData);
+            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            
+            if (link.download !== undefined) {
+                link.setAttribute("href", URL.createObjectURL(blob));
+                link.setAttribute("download", fileName);
+                link.click();
+                showToast(`ดาวน์โหลด ${fileName} แล้ว!`, 'success');
+            }
+        }
+
+        // Image Lightbox zoom Modal
+        function openImageModal(url, worker) {
+            const modal = document.getElementById('image-modal');
+            const img = document.getElementById('modal-img');
+            const caption = document.getElementById('modal-caption-title');
+
+            img.src = url;
+            caption.textContent = `ผู้รายงาน: ${worker}`;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
